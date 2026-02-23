@@ -1,0 +1,1081 @@
+/* ============================================================
+   styles.css — FitTracker Dashboard
+   Organización:
+     1. Variables (Design Tokens)
+     2. Reset & Base
+     3. Layout principal (app)
+     4. Sidebar
+     5. Navegación del Sidebar
+     6. Usuario del Sidebar
+     7. Contenido principal
+     8. Encabezado de página
+     9. Sección: Estadísticas
+    10. Tarjetas de estadística
+    11. Sección: Accesos Rápidos
+    12. Elementos de acceso rápido
+   ============================================================ */
+
+
+/* ============================================================
+   1. VARIABLES — Tokens de diseño centralizados
+   ============================================================ */
+:root {
+  /* Colores de fondo */
+  --color-bg-app:       #111111;
+  --color-bg-sidebar:   #161616;
+  --color-bg-card:      #1e1e1e;
+  --color-bg-card-alt:  #242424;    /* cards del acceso rápido (hover) */
+
+  /* Acento principal */
+  --color-accent:       #00d97e;
+  --color-accent-bg:    #00d97e;    /* fondo de íconos e ítem activo */
+
+  /* Texto */
+  --color-text-primary:   #ffffff;
+  --color-text-secondary: #888888;
+  --color-text-muted:     #555555;
+
+  /* Bordes */
+  --color-border:         #2a2a2a;
+
+  /* Espaciado */
+  --spacing-xs:   4px;
+  --spacing-sm:   8px;
+  --spacing-md:   16px;
+  --spacing-lg:   24px;
+  --spacing-xl:   32px;
+
+  /* Tipografía */
+  --font-family:  'Segoe UI', 'Inter', Arial, sans-serif;
+  --font-size-xs: 0.72rem;
+  --font-size-sm: 0.85rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.75rem;
+  --font-size-xl: 1.5rem;
+
+  /* Bordes redondeados */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-full: 9999px;
+
+  /* Transiciones */
+  --transition-fast: 150ms ease;
+
+  /* Dimensiones del sidebar */
+  --sidebar-width: 185px;
+}
+
+
+/* ============================================================
+   2. RESET & BASE
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-app);
+  -webkit-font-smoothing: antialiased;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+svg {
+  /* Los SVGs heredan el stroke del color del contenedor */
+  stroke: currentColor;
+  display: block;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   3. LAYOUT PRINCIPAL — Flexbox horizontal (sidebar + main)
+   ============================================================ */
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;               /* evita scroll en el contenedor raíz */
+}
+
+
+/* ============================================================
+   4. SIDEBAR
+   ============================================================ */
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background-color: var(--color-bg-sidebar);
+  border-right: 1px solid var(--color-border);
+
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg) var(--spacing-md);
+  flex-shrink: 0;                 /* evita que el sidebar se comprima */
+}
+
+/* Logo "FitTracker" */
+.sidebar__logo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
+  margin-bottom: var(--spacing-xl);
+  padding-left: var(--spacing-xs);
+}
+
+/* El nav ocupa el espacio disponible para empujar el usuario al fondo */
+.sidebar__nav {
+  flex: 1;
+}
+
+
+/* ============================================================
+   5. NAVEGACIÓN DEL SIDEBAR
+   ============================================================ */
+.nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.nav__item {
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+/* Ícono SVG del ítem de navegación */
+.nav__icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* Estado activo */
+.nav__item--active {
+  background-color: var(--color-accent);
+  color: #000000;                 /* texto oscuro sobre fondo verde */
+  font-weight: 600;
+}
+
+/* Hover para ítems no activos */
+.nav__item:not(.nav__item--active):hover {
+  background-color: var(--color-bg-card);
+  color: var(--color-text-primary);
+}
+
+
+/* ============================================================
+   6. USUARIO DEL SIDEBAR (parte inferior)
+   ============================================================ */
+.sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Círculo con iniciales */
+.user__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-card-alt);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user__name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   7. CONTENIDO PRINCIPAL
+   ============================================================ */
+.main-content {
+  flex: 1;
+  overflow-y: auto;               /* scroll solo en el contenido */
+  padding: var(--spacing-xl) var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+
+/* ============================================================
+   8. ENCABEZADO DE PÁGINA
+   ============================================================ */
+.page-header__title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  margin-bottom: var(--spacing-xs);
+}
+
+.page-header__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+
+/* ============================================================
+   9. SECCIÓN: ESTADÍSTICAS — Cuadrícula de 4 columnas
+   ============================================================ */
+.stats__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+}
+
+
+/* ============================================================
+   10. TARJETAS DE ESTADÍSTICA
+   ============================================================ */
+.stat-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Fondo cuadrado redondeado del ícono */
+.stat-card__icon-wrapper {
+  width: 46px;
+  height: 46px;
+  background-color: var(--color-accent);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+/* El ícono SVG dentro del wrapper es oscuro para contrastar con verde */
+.stat-card__icon {
+  width: 22px;
+  height: 22px;
+  stroke: #000000;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stat-card__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+/* Valor numérico destacado en verde */
+.stat-card__value {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.stat-card__description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+
+/* ============================================================
+   11. SECCIÓN: ACCESOS RÁPIDOS — Tarjeta contenedora
+   ============================================================ */
+.quick-access__card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.quick-access__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Cuadrícula de 3 columnas para los accesos */
+.quick-access__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+}
+
+
+/* ============================================================
+   12. ELEMENTOS DE ACCESO RÁPIDO (botones e ítems interactivos)
+       Pueden ser <button> o <a>, ambos usan la misma clase.
+   ============================================================ */
+.access-item {
+  background-color: var(--color-bg-card-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl) var(--spacing-md);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-sm);
+
+  /* Reset para cuando el elemento sea <a> */
+  text-decoration: none;
+  color: var(--color-text-primary);
+
+  transition: border-color var(--transition-fast);
+}
+
+/* Hover: resaltar borde con el color acento */
+.access-item:hover {
+  border-color: var(--color-accent);
+}
+
+/* Fondo del ícono */
+.access-item__icon-wrapper {
+  width: 46px;
+  height: 46px;
+  background-color: var(--color-accent);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Ícono SVG del acceso rápido */
+.access-item__icon {
+  width: 22px;
+  height: 22px;
+  stroke: #000000;
+  fill: #000000;                  /* el ícono play usa fill */
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.access-item__label {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.access-item__description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+
+/* ============================================================
+   13. NAV LINKS — Anclas dentro de los ítems de navegación
+       El padding está en el <a> para que toda el área sea
+       clickeable, no solo el texto.
+   ============================================================ */
+.nav__link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: 10px var(--spacing-md);
+  color: inherit;                 /* hereda el color del .nav__item */
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: inherit;
+}
+
+
+/* ============================================================
+   14. BADGES — Etiquetas de clasificación (Hipertrofia, etc.)
+   ============================================================ */
+.badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Badge relleno (verde) */
+.badge--filled {
+  background-color: var(--color-accent);
+  color: #000000;
+}
+
+/* Badge con borde (oscuro) */
+.badge--outlined {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+
+/* ============================================================
+   15. TARJETA DE INFORMACIÓN DE RUTINA
+   ============================================================ */
+.routine-info {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.routine-info__tags {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* Línea de "Objetivo:" o "Notas:" */
+.routine-info__line {
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+/* Label en blanco ("Objetivo:", "Notas:") */
+.routine-info__key {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  margin-right: var(--spacing-xs);
+}
+
+/* Valor destacado en verde (texto del objetivo) */
+.routine-info__value {
+  color: var(--color-accent);
+}
+
+/* Texto secundario (notas) */
+.routine-info__note {
+  color: var(--color-text-secondary);
+}
+
+
+/* ============================================================
+   16. ACORDEÓN DE DÍAS — <details> + <summary>
+   ============================================================ */
+.days {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Contenedor de cada día */
+.day-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Eliminar el marcador nativo del <summary> */
+.day-card__summary {
+  list-style: none;
+}
+.day-card__summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Cabecera del acordeón (clickeable) */
+.day-card__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-fast);
+}
+
+.day-card__summary:hover {
+  background-color: var(--color-bg-card-alt);
+}
+
+/* Contenido izquierdo (ícono + nombre + conteo) */
+.day-card__summary-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+/* Wrapper del ícono del día */
+.day-card__icon-wrapper {
+  width: 42px;
+  height: 42px;
+  background-color: var(--color-accent);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.day-card__icon {
+  width: 20px;
+  height: 20px;
+  stroke: #000000;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.day-card__name {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.day-card__count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+/* Chevron: apunta hacia arriba cuando está abierto */
+.day-card__chevron {
+  width: 18px;
+  height: 18px;
+  stroke: var(--color-text-secondary);
+  fill: none;
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+/* Cuando el details está cerrado, el chevron apunta hacia abajo */
+.day-card:not([open]) .day-card__chevron {
+  transform: rotate(180deg);
+}
+
+
+/* ============================================================
+   17. LISTA DE EJERCICIOS dentro de cada día
+   ============================================================ */
+.exercise-list {
+  padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  /* Separador visual entre ejercicios sin añadir elementos HTML extra */
+  gap: 0;
+}
+
+/* Cada ejercicio */
+.exercise-item {
+  padding: var(--spacing-md) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Separador entre ejercicios (excepto el último) */
+.exercise-item + .exercise-item {
+  border-top: 1px solid var(--color-border);
+}
+
+/* Fila superior: nombre + botón de video */
+.exercise-item__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.exercise-item__name {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Botón/enlace de Video */
+.exercise-item__video {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px 3px 8px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-card-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.exercise-item__video svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+}
+
+.exercise-item__video:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Fila inferior: Series, Repeticiones, Descanso */
+.exercise-item__stats {
+  display: flex;
+  gap: var(--spacing-xl);
+  flex-wrap: wrap;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.exercise-item__stats strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+
+/* ============================================================
+   18. ENLACE DE RETROCESO (← Volver al historial)
+   ============================================================ */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+  margin-bottom: var(--spacing-sm);
+}
+
+.back-link:hover {
+  color: var(--color-accent);
+}
+
+.back-link__icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  flex-shrink: 0;
+}
+
+/* Variante del subtítulo del encabezado en color acento */
+.page-header__subtitle--accent {
+  color: var(--color-accent);
+}
+
+
+/* ============================================================
+   19. TARJETA DE FORMULARIO
+   ============================================================ */
+.form-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 660px;               /* limita el ancho para mejor legibilidad */
+  margin: 0 auto;                 /* centra horizontalmente dentro del main */
+}
+
+
+/* ============================================================
+   20. CAMPOS DE FORMULARIO
+   ============================================================ */
+.progress-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Contenedor de cada campo (label + control) */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Etiqueta del campo */
+.form-field__label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Texto "(opcional)" dentro del label */
+.form-field__optional {
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+/* Wrapper para campos con ícono interior */
+.form-field__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Ícono flotante a la izquierda del input */
+.form-field__icon {
+  position: absolute;
+  left: var(--spacing-md);
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-text-secondary);
+  fill: none;
+  pointer-events: none;           /* no interfiere con el clic del input */
+  flex-shrink: 0;
+}
+
+/* Estilos base compartidos por <input> y <textarea> */
+.form-field__input,
+.form-field__textarea {
+  width: 100%;
+  background-color: var(--color-bg-card-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  transition: border-color var(--transition-fast);
+  outline: none;
+}
+
+/* Input con ícono — padding izquierdo mayor para no tapar el ícono */
+.form-field__input {
+  padding: 12px var(--spacing-md) 12px 44px;
+}
+
+/* Input sin ícono */
+.form-field__input--no-icon {
+  padding: 12px var(--spacing-md);
+}
+
+/* Textarea — sin ícono, resize solo vertical */
+.form-field__textarea {
+  padding: 12px var(--spacing-md);
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+/* Placeholder */
+.form-field__input::placeholder,
+.form-field__textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Focus: resalta con el color acento */
+.form-field__input:focus,
+.form-field__textarea:focus {
+  border-color: var(--color-accent);
+}
+
+/* Estilo nativo del selector de fecha en modo oscuro */
+.form-field__input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);            /* atenúa el ícono nativo del browser */
+  cursor: pointer;
+}
+
+
+/* ============================================================
+   21. BOTÓN DE ENVÍO DEL FORMULARIO
+   ============================================================ */
+.btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+
+  width: 100%;
+  padding: 14px var(--spacing-lg);
+  border-radius: var(--radius-md);
+
+  background-color: var(--color-accent);
+  color: #000000;                 /* texto oscuro sobre fondo verde */
+  font-size: var(--font-size-md);
+  font-weight: 700;
+
+  transition: opacity var(--transition-fast);
+}
+
+.btn-submit:hover {
+  opacity: 0.88;
+}
+
+.btn-submit:active {
+  opacity: 0.75;
+}
+
+.btn-submit__icon {
+  width: 18px;
+  height: 18px;
+  stroke: #000000;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   22. SIDEBAR USER — subtítulo de rol bajo el nombre
+   ============================================================ */
+.user__info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user__role {
+  font-size: var(--font-size-xs);
+  color: var(--color-accent);
+}
+
+
+/* ============================================================
+   23. BOTÓN CON BORDE (Editar Perfil)
+   ============================================================ */
+.btn-outlined {
+  padding: 9px var(--spacing-lg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-outlined:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+
+/* ============================================================
+   24. TARJETA BANNER DE PERFIL (parte superior)
+   ============================================================ */
+.profile-banner {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+/* Lado izquierdo: avatar + datos */
+.profile-banner__left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+/* Avatar grande con iniciales */
+.profile-banner__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg-card-alt);
+  color: var(--color-text-primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-banner__name {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Fila de metadatos (email + fecha) */
+.profile-banner__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Cada ítem de metadatos con ícono */
+.profile-banner__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.profile-banner__meta-item svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--color-text-secondary);
+  fill: none;
+  flex-shrink: 0;
+}
+
+.profile-banner__badges {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+
+/* ============================================================
+   25. CUADRÍCULA INFERIOR DE PERFIL (2 columnas)
+   ============================================================ */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+/* Tarjeta de cada sección (Info Personal / Seguridad) */
+.profile-section-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Título con ícono de cada tarjeta */
+.profile-section-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.profile-section-card__title svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--color-text-primary);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  flex-shrink: 0;
+}
+
+/* Formulario dentro de Info Personal */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Label en color acento (correo electrónico) */
+.form-field__label--accent {
+  color: var(--color-accent);
+}
+
+
+/* ============================================================
+   26. BOTONES DE SEGURIDAD
+   ============================================================ */
+.security-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Base compartida de los botones de seguridad */
+.security-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 12px var(--spacing-md);
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  width: 100%;
+  transition: opacity var(--transition-fast);
+}
+
+.security-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.security-btn:hover {
+  opacity: 0.85;
+}
+
+/* Variante oscura (Cambiar Contraseña) */
+.security-btn--default {
+  background-color: var(--color-bg-card-alt);
+  color: var(--color-text-primary);
+}
+
+/* Variante roja (Cerrar Sesión) */
+.security-btn--danger {
+  background-color: #c0392b;
+  color: #ffffff;
+}
