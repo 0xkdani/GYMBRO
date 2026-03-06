@@ -891,3 +891,678 @@ text-decoration: none;
   background-color: #c0392b;
   color: #ffffff;
 }
+
+/* Perfil coach  */
+.perfil-coach-page {
+  --coach-bg-main: #060b19;
+  --coach-bg-sidebar: #171a24;
+  --coach-border-soft: #2b3042;
+  --coach-text-soft: #9ea9c5;
+  --coach-accent: #21d97b;
+  --coach-danger: #f54545;
+  background: radial-gradient(circle at top right, #0c1226 0%, var(--coach-bg-main) 45%, #04070f 100%);
+  color: #fff;
+  min-height: 100vh;
+}
+
+.perfil-coach-page .app-shell {
+  min-height: 100vh;
+}
+
+.perfil-coach-page .sidebar {
+  background: var(--coach-bg-sidebar);
+  border-right: 1px solid var(--coach-border-soft);
+  min-height: 100vh;
+  width: 260px;
+}
+
+.perfil-coach-page .nav-link {
+  color: var(--coach-text-soft);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-weight: 500;
+}
+
+.perfil-coach-page .nav-link:hover {
+  color: #fff;
+  background: #202638;
+}
+
+.perfil-coach-page .nav-link.active {
+  background: var(--coach-accent);
+  color: #031208;
+  font-weight: 700;
+}
+
+.perfil-coach-page .profile-card {
+  background: linear-gradient(95deg, rgba(27, 31, 44, 0.96), rgba(24, 28, 40, 0.96));
+  border: 1px solid var(--coach-border-soft);
+  border-radius: 18px;
+}
+
+.perfil-coach-page .profile-avatar,
+.perfil-coach-page .user-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--coach-accent);
+  color: #05150d;
+  font-weight: 700;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.perfil-coach-page .user-avatar {
+  width: 44px;
+  height: 44px;
+  font-size: 1.15rem;
+}
+
+.perfil-coach-page .badge-soft {
+  background: rgba(33, 217, 123, 0.2);
+  color: var(--coach-accent);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid rgba(33, 217, 123, 0.15);
+}
+
+.perfil-coach-page .form-control {
+  background-color: #2a2f41;
+  border-color: #2a2f41;
+  color: #fff;
+}
+
+.perfil-coach-page .form-control:focus {
+  background-color: #2a2f41;
+  border-color: var(--coach-accent);
+  color: #fff;
+  box-shadow: 0 0 0 0.2rem rgba(33, 217, 123, 0.2);
+}
+
+.perfil-coach-page .btn-outline-light {
+  border-color: var(--coach-border-soft);
+}
+
+.perfil-coach-page .btn-outline-light:hover {
+  background: #22283a;
+  border-color: #3a425d;
+}
+
+.perfil-coach-page .btn-dark-soft {
+  background: #2a2f41;
+  color: #fff;
+  border: 1px solid #2a2f41;
+}
+
+.perfil-coach-page .btn-dark-soft:hover {
+  background: #343b51;
+  color: #fff;
+}
+
+.perfil-coach-page .btn-danger-soft {
+  background: var(--coach-danger);
+  border-color: var(--coach-danger);
+  color: #fff;
+}
+
+.perfil-coach-page .btn-danger-soft:hover {
+  background: #dc3939;
+  border-color: #dc3939;
+  color: #fff;
+}
+
+.perfil-coach-page .coach-admin-btn {
+  background-color: var(--coach-accent);
+  color: #04120a;
+}
+
+.perfil-coach-page .coach-admin-btn:hover {
+  background-color: #1ece74;
+  color: #04120a;
+}
+
+.perfil-coach-page .text-soft {
+  color: var(--coach-text-soft);
+}
+
+@media (max-width: 991.98px) {
+  .perfil-coach-page .sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+}
+
+/* Gestion de rutinas */
+.gestion-rutina-coach-page {
+  --coach-r-bg-main: #060b19;
+  --coach-r-bg-sidebar: #171a24;
+  --coach-r-border-soft: #2b3042;
+  --coach-r-text-soft: #9ea9c5;
+  --coach-r-accent: #21d97b;
+  --coach-r-danger: #f54545;
+  background: radial-gradient(circle at top right, #0c1226 0%, var(--coach-r-bg-main) 45%, #04070f 100%);
+  color: #fff;
+  min-height: 100vh;
+}
+
+.gestion-rutina-coach-page .coach-routines-shell {
+  min-height: 100vh;
+}
+
+.gestion-rutina-coach-page .coach-sidebar {
+  background: var(--coach-r-bg-sidebar);
+  border-right: 1px solid var(--coach-r-border-soft);
+  min-height: 100vh;
+  width: 260px;
+}
+
+.gestion-rutina-coach-page .nav-link {
+  color: var(--coach-r-text-soft);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-weight: 500;
+}
+
+.gestion-rutina-coach-page .nav-link:hover {
+  color: #fff;
+  background: #202638;
+}
+
+.gestion-rutina-coach-page .nav-link.active {
+  background: var(--coach-r-accent);
+  color: #031208;
+  font-weight: 700;
+}
+
+.gestion-rutina-coach-page .coach-user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--coach-r-accent);
+  color: #05150d;
+  font-weight: 700;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gestion-rutina-coach-page .coach-text-soft {
+  color: var(--coach-r-text-soft);
+}
+
+.gestion-rutina-coach-page .btn-dark-soft {
+  background: #2a2f41;
+  color: #fff;
+  border: 1px solid #2a2f41;
+}
+
+.gestion-rutina-coach-page .btn-dark-soft:hover {
+  background: #343b51;
+  color: #fff;
+}
+
+.gestion-rutina-coach-page .coach-btn-accent {
+  background: var(--coach-r-accent);
+  color: #04120a;
+  border: 1px solid var(--coach-r-accent);
+  font-weight: 600;
+}
+
+.gestion-rutina-coach-page .coach-btn-accent:hover {
+  background: #1ece74;
+  color: #04120a;
+}
+
+.gestion-rutina-coach-page .routine-card {
+  background: linear-gradient(95deg, rgba(27, 31, 44, 0.96), rgba(24, 28, 40, 0.96));
+  border: 1px solid var(--coach-r-border-soft);
+  border-radius: 18px;
+}
+
+.gestion-rutina-coach-page .coach-pill {
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.gestion-rutina-coach-page .coach-pill-accent {
+  background: rgba(33, 217, 123, 0.2);
+  color: var(--coach-r-accent);
+  border: 1px solid rgba(33, 217, 123, 0.15);
+}
+
+.gestion-rutina-coach-page .coach-pill-muted {
+  background: #2a2f41;
+  color: #fff;
+  border: 1px solid #2a2f41;
+}
+
+.gestion-rutina-coach-page .routine-divider {
+  border-top: 1px solid var(--coach-r-border-soft);
+}
+
+.gestion-rutina-coach-page .assigned-user {
+  background: rgba(12, 16, 28, 0.75);
+  border-radius: 14px;
+}
+
+.gestion-rutina-coach-page .assigned-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--coach-r-accent);
+  color: #04120a;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+.gestion-rutina-coach-page .coach-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  padding: 0;
+}
+
+.gestion-rutina-coach-page .coach-icon-btn-success {
+  background: rgba(33, 217, 123, 0.22);
+  color: var(--coach-r-accent);
+}
+
+.gestion-rutina-coach-page .coach-icon-btn-muted {
+  background: #2a2f41;
+  color: #fff;
+}
+
+.gestion-rutina-coach-page .coach-icon-btn-danger {
+  background: rgba(245, 69, 69, 0.22);
+  color: var(--coach-r-danger);
+}
+
+.gestion-rutina-coach-page .coach-icon-btn-success:hover {
+  background: rgba(33, 217, 123, 0.3);
+  color: var(--coach-r-accent);
+}
+
+.gestion-rutina-coach-page .coach-icon-btn-muted:hover {
+  background: #343b51;
+  color: #fff;
+}
+
+.gestion-rutina-coach-page .coach-icon-btn-danger:hover {
+  background: rgba(245, 69, 69, 0.3);
+  color: var(--coach-r-danger);
+}
+
+.gestion-rutina-coach-page .coach-catalog-modal .modal-content {
+  background: #090f20;
+  border: 1px solid var(--coach-r-border-soft);
+  border-radius: 18px;
+  color: #fff;
+}
+
+.gestion-rutina-coach-page .coach-catalog-modal .modal-header,
+.gestion-rutina-coach-page .coach-catalog-modal .modal-body {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.gestion-rutina-coach-page .coach-catalog-modal .modal-body {
+  padding-bottom: 1.5rem;
+}
+
+.gestion-rutina-coach-page .coach-back-btn {
+  color: var(--coach-r-text-soft);
+  border: none;
+  background: transparent;
+  padding: 0.25rem 0;
+}
+
+.gestion-rutina-coach-page .coach-back-btn:hover {
+  color: #fff;
+}
+
+.gestion-rutina-coach-page .catalog-card {
+  background: linear-gradient(95deg, rgba(27, 31, 44, 0.96), rgba(24, 28, 40, 0.96));
+  border: 1px solid var(--coach-r-border-soft);
+  border-radius: 16px;
+}
+
+.gestion-rutina-coach-page .catalog-video-ok {
+  color: var(--coach-r-accent);
+  font-weight: 500;
+}
+
+.gestion-rutina-coach-page .catalog-video-miss {
+  color: var(--coach-r-text-soft);
+}
+
+.gestion-rutina-coach-page .coach-exercise-form-modal .modal-content {
+  background: #0f1528;
+  border: 1px solid var(--coach-r-border-soft);
+  border-radius: 16px;
+  color: #fff;
+}
+
+.gestion-rutina-coach-page .coach-exercise-form-modal .form-label {
+  color: var(--coach-r-text-soft);
+}
+
+.gestion-rutina-coach-page .coach-exercise-form-modal .form-control,
+.gestion-rutina-coach-page .coach-exercise-form-modal .form-select {
+  background-color: #2a2f41;
+  border-color: #2a2f41;
+  color: #fff;
+}
+
+.gestion-rutina-coach-page .coach-exercise-form-modal .form-control:focus,
+.gestion-rutina-coach-page .coach-exercise-form-modal .form-select:focus {
+  background-color: #2a2f41;
+  border-color: var(--coach-r-accent);
+  color: #fff;
+  box-shadow: 0 0 0 0.2rem rgba(33, 217, 123, 0.2);
+}
+
+@media (max-width: 991.98px) {
+  .gestion-rutina-coach-page .coach-sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+}
+
+/* Crear rutina coach */
+.crear-rutina-coach-page {
+  --coach-c-bg-main: #050a18;
+  --coach-c-card: #1a1f2c;
+  --coach-c-border: #2a3043;
+  --coach-c-text-soft: #9ea9c5;
+  --coach-c-accent: #21d97b;
+  --coach-c-danger: #f54545;
+  background: radial-gradient(circle at top right, #0c1226 0%, var(--coach-c-bg-main) 45%, #04070f 100%);
+  color: #fff;
+  min-height: 100vh;
+}
+
+.crear-rutina-coach-page .coach-back-link {
+  color: var(--coach-c-text-soft);
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.crear-rutina-coach-page .coach-back-link:hover {
+  color: #fff;
+}
+
+.crear-rutina-coach-page .coach-c-text-soft {
+  color: var(--coach-c-text-soft);
+}
+
+.crear-rutina-coach-page .coach-routines-shell {
+  min-height: 100vh;
+}
+
+.crear-rutina-coach-page .coach-sidebar {
+  background: #171a24;
+  border-right: 1px solid #2b3042;
+  min-height: 100vh;
+  width: 260px;
+}
+
+.crear-rutina-coach-page .nav-link {
+  color: var(--coach-c-text-soft);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-weight: 500;
+}
+
+.crear-rutina-coach-page .nav-link:hover {
+  color: #fff;
+  background: #202638;
+}
+
+.crear-rutina-coach-page .nav-link.active {
+  background: var(--coach-c-accent);
+  color: #031208;
+  font-weight: 700;
+}
+
+.crear-rutina-coach-page .coach-user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--coach-c-accent);
+  color: #05150d;
+  font-weight: 700;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crear-rutina-coach-page .coach-c-card {
+  background: linear-gradient(95deg, rgba(27, 31, 44, 0.96), rgba(24, 28, 40, 0.96));
+  border: 1px solid var(--coach-c-border);
+  border-radius: 18px;
+}
+
+.crear-rutina-coach-page .form-label {
+  color: #fff;
+  font-weight: 600;
+}
+
+.crear-rutina-coach-page .form-control,
+.crear-rutina-coach-page .form-select {
+  background-color: #2a2f41;
+  border-color: #2a2f41;
+  color: #fff;
+}
+
+.crear-rutina-coach-page .form-control::placeholder {
+  color: var(--coach-c-text-soft);
+}
+
+.crear-rutina-coach-page .form-control:focus,
+.crear-rutina-coach-page .form-select:focus {
+  background-color: #2a2f41;
+  border-color: var(--coach-c-accent);
+  color: #fff;
+  box-shadow: 0 0 0 0.2rem rgba(33, 217, 123, 0.2);
+}
+
+.crear-rutina-coach-page .coach-c-btn-accent {
+  background: var(--coach-c-accent);
+  color: #04120a;
+  border: 1px solid var(--coach-c-accent);
+  font-weight: 600;
+}
+
+.crear-rutina-coach-page .coach-c-btn-accent:hover {
+  background: #1ece74;
+  color: #04120a;
+}
+
+.crear-rutina-coach-page .btn-dark-soft {
+  background: #2a2f41;
+  color: #fff;
+  border: 1px solid #2a2f41;
+}
+
+.crear-rutina-coach-page .btn-dark-soft:hover {
+  background: #343b51;
+  color: #fff;
+}
+
+.crear-rutina-coach-page .coach-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  padding: 0;
+}
+
+.crear-rutina-coach-page .coach-icon-btn-muted {
+  background: #2a2f41;
+  color: #fff;
+}
+
+.crear-rutina-coach-page .coach-icon-btn-muted:hover {
+  background: #343b51;
+  color: #fff;
+}
+
+.crear-rutina-coach-page .coach-icon-btn-danger {
+  background: rgba(245, 69, 69, 0.22);
+  color: var(--coach-c-danger);
+}
+
+.crear-rutina-coach-page .coach-icon-btn-danger:hover {
+  background: rgba(245, 69, 69, 0.3);
+  color: var(--coach-c-danger);
+}
+
+.crear-rutina-coach-page .coach-c-table thead th {
+  background: #2a2f41;
+  color: var(--coach-c-text-soft);
+  border-bottom: 1px solid var(--coach-c-border);
+  border-top: 1px solid var(--coach-c-border);
+  font-weight: 600;
+}
+
+.crear-rutina-coach-page .coach-c-table td {
+  color: #fff;
+  background: transparent;
+  border-color: var(--coach-c-border);
+}
+
+.crear-rutina-coach-page .coach-c-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+@media (max-width: 991.98px) {
+  .crear-rutina-coach-page .coach-sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+}
+
+/* Dashboard coach */
+.dashboard-coach-page {
+  --coach-d-bg-main: #060b19;
+  --coach-d-bg-sidebar: #171a24;
+  --coach-d-border-soft: #2b3042;
+  --coach-d-text-soft: #9ea9c5;
+  --coach-d-accent: #21d97b;
+  background: radial-gradient(circle at top right, #0c1226 0%, var(--coach-d-bg-main) 45%, #04070f 100%);
+  color: #fff;
+  min-height: 100vh;
+}
+
+.dashboard-coach-page .coach-d-shell {
+  min-height: 100vh;
+}
+
+.dashboard-coach-page .coach-d-sidebar {
+  background: var(--coach-d-bg-sidebar);
+  border-right: 1px solid var(--coach-d-border-soft);
+  min-height: 100vh;
+  width: 260px;
+}
+
+.dashboard-coach-page .nav-link {
+  color: var(--coach-d-text-soft);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-weight: 500;
+}
+
+.dashboard-coach-page .nav-link:hover {
+  color: #fff;
+  background: #202638;
+}
+
+.dashboard-coach-page .nav-link.active {
+  background: var(--coach-d-accent);
+  color: #031208;
+  font-weight: 700;
+}
+
+.dashboard-coach-page .coach-d-user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--coach-d-accent);
+  color: #05150d;
+  font-weight: 700;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-coach-page .coach-d-text-soft {
+  color: var(--coach-d-text-soft);
+}
+
+.dashboard-coach-page .coach-d-card {
+  background: linear-gradient(95deg, rgba(27, 31, 44, 0.96), rgba(24, 28, 40, 0.96));
+  border: 1px solid var(--coach-d-border-soft);
+  border-radius: 18px;
+}
+
+.dashboard-coach-page .coach-d-icon-wrap {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: rgba(33, 217, 123, 0.22);
+  color: var(--coach-d-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.dashboard-coach-page .coach-d-btn-accent {
+  background: var(--coach-d-accent);
+  color: #04120a;
+  border: 1px solid var(--coach-d-accent);
+  font-weight: 600;
+}
+
+.dashboard-coach-page .coach-d-btn-accent:hover {
+  background: #1ece74;
+  color: #04120a;
+}
+
+.dashboard-coach-page .btn-dark-soft {
+  background: #2a2f41;
+  color: #fff;
+  border: 1px solid #2a2f41;
+}
+
+.dashboard-coach-page .btn-dark-soft:hover {
+  background: #343b51;
+  color: #fff;
+}
+
+@media (max-width: 991.98px) {
+  .dashboard-coach-page .coach-d-sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+}
