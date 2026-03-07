@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FitTracker — Mi Coach</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body class="mi-coach-page coach-page">
+  <div class="container-fluid coach-shell px-0">
+    <div class="row g-0 min-vh-100">
+
+      <!-- Sidebar -->
+      <aside class="col-12 col-lg-auto coach-sidebar d-flex flex-column p-3 p-lg-4">
+        <h5 class="mb-4">FitTracker</h5>
+
+        <nav class="nav flex-column gap-2 mb-4">
+          <a class="nav-link d-flex align-items-center gap-2" href="dashboard-cliente.html">
+            <i class="bi bi-grid"></i>
+            Dashboard
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="rutina-cliente.html">
+            <i class="bi bi-clipboard2-pulse"></i>
+            Mi Rutina
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="progreso-cliente.html">
+            <i class="bi bi-graph-up-arrow"></i>
+            Progreso
+          </a>
+          <a class="nav-link active d-flex align-items-center gap-2" href="mi-coach.html" aria-current="page">
+            <i class="bi bi-people"></i>
+            Mi Coach
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="perfil-cliente.html">
+            <i class="bi bi-person"></i>
+            Perfil
+          </a>
+        </nav>
+
+        <div class="mt-auto border-top border-secondary-subtle pt-3 d-flex align-items-center gap-3">
+          <div class="coach-user-avatar">JD</div>
+          <div>
+            <div class="fw-semibold">Juan Diaz</div>
+            <small class="coach-text-soft">Usuario</small>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="col p-4 p-xl-5">
+
+        <header class="mb-4">
+          <h1 class="display-5 fw-semibold mb-2">Mi Coach</h1>
+          <p class="coach-text-soft mb-0">Gestiona tus coaches y descubre nuevos</p>
+        </header>
+
+        <!-- Mis Coaches -->
+        <section class="mb-4" aria-label="Mis coaches seleccionados">
+          <h2 class="h4 mb-3">Mis Coaches</h2>
+          <div class="row g-3">
+
+            <!-- Coach seleccionado 1 -->
+            <div class="col-12 col-md-6 col-xl-4">
+              <article class="coach-card p-4 coach-card-clickable"
+                style="cursor:pointer;"
+                data-coach="ca"
+                data-bs-toggle="modal" data-bs-target="#modalPerfilCoach">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="coach-user-avatar flex-shrink-0" style="width:52px;height:52px;font-size:1.3rem;">CA</div>
+                  <div class="flex-grow-1 min-w-0">
+                    <p class="fw-semibold mb-0">Carlos Avila</p>
+                    <p class="coach-text-soft small mb-0">Fuerza y Potencia</p>
+                  </div>
+                  <span class="badge text-bg-success px-2 py-1 flex-shrink-0">Activo</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="text-warning">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                  </div>
+                  <span class="coach-text-soft small">4.5 &middot; 12 reseñas</span>
+                </div>
+                <p class="coach-text-soft small mb-0"><i class="bi bi-eye me-1"></i>Click para ver perfil completo</p>
+              </article>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Divisor -->
+        <hr class="border-secondary-subtle my-4" />
+
+        <!-- Coaches disponibles -->
+        <section aria-label="Coaches disponibles">
+          <h2 class="h4 mb-3">Coaches Disponibles</h2>
+          <div class="row g-3">
+
+            <!-- Coach disponible 1 -->
+            <div class="col-12 col-md-6 col-xl-4">
+              <article class="coach-card p-4 coach-card-clickable"
+                style="cursor:pointer;"
+                data-coach="mr"
+                data-bs-toggle="modal" data-bs-target="#modalPerfilCoach">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="coach-user-avatar flex-shrink-0" style="width:52px;height:52px;font-size:1.3rem;">MR</div>
+                  <div class="flex-grow-1 min-w-0">
+                    <p class="fw-semibold mb-0">Maria Rios</p>
+                    <p class="coach-text-soft small mb-0">Cardio y Resistencia</p>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="text-warning">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
+                  </div>
+                  <span class="coach-text-soft small">4.0 &middot; 8 reseñas</span>
+                </div>
+                <p class="coach-text-soft small mb-0"><i class="bi bi-eye me-1"></i>Click para ver perfil completo</p>
+              </article>
+            </div>
+
+            <!-- Coach disponible 2 -->
+            <div class="col-12 col-md-6 col-xl-4">
+              <article class="coach-card p-4 coach-card-clickable"
+                style="cursor:pointer;"
+                data-coach="lp"
+                data-bs-toggle="modal" data-bs-target="#modalPerfilCoach">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="coach-user-avatar flex-shrink-0" style="width:52px;height:52px;font-size:1.3rem;">LP</div>
+                  <div class="flex-grow-1 min-w-0">
+                    <p class="fw-semibold mb-0">Luis Pena</p>
+                    <p class="coach-text-soft small mb-0">Hipertrofia</p>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="text-warning">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                  </div>
+                  <span class="coach-text-soft small">5.0 &middot; 5 reseñas</span>
+                </div>
+                <p class="coach-text-soft small mb-0"><i class="bi bi-eye me-1"></i>Click para ver perfil completo</p>
+              </article>
+            </div>
+
+            <!-- Coach disponible 3 -->
+            <div class="col-12 col-md-6 col-xl-4">
+              <article class="coach-card p-4 coach-card-clickable"
+                style="cursor:pointer;"
+                data-coach="sv"
+                data-bs-toggle="modal" data-bs-target="#modalPerfilCoach">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="coach-user-avatar flex-shrink-0" style="width:52px;height:52px;font-size:1.3rem;">SV</div>
+                  <div class="flex-grow-1 min-w-0">
+                    <p class="fw-semibold mb-0">Sofia Vargas</p>
+                    <p class="coach-text-soft small mb-0">Yoga y Flexibilidad</p>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <div class="text-warning">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i><i class="bi bi-star"></i>
+                  </div>
+                  <span class="coach-text-soft small">3.5 &middot; 20 reseñas</span>
+                </div>
+                <p class="coach-text-soft small mb-0"><i class="bi bi-eye me-1"></i>Click para ver perfil completo</p>
+              </article>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal perfil del coach (3 pestanas) -->
+  <div class="modal fade" id="modalPerfilCoach" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="background:#0c1120; border:1px solid var(--coach-border-soft); border-radius:18px; color:#fff;">
+
+        <!-- Cabecera -->
+        <div class="modal-header border-0 pb-0 pt-4 px-4">
+          <div class="d-flex align-items-center gap-3 flex-grow-1">
+            <div class="coach-user-avatar flex-shrink-0" id="modal-avatar" style="width:56px;height:56px;font-size:1.3rem;"></div>
+            <div>
+              <h5 class="modal-title fw-semibold mb-0" id="modal-nombre"></h5>
+              <p class="coach-text-soft small mb-0" id="modal-especialidad"></p>
+            </div>
+            <div class="ms-auto d-flex align-items-center gap-2 me-3">
+              <div class="text-warning" id="modal-estrellas"></div>
+              <span class="coach-text-soft small" id="modal-rating-txt"></span>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <!-- Pestanas -->
+        <div class="px-4 pt-3">
+          <ul class="nav nav-pills gap-2" id="coachModalTabs" role="tablist">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#modal-tab-sobremi"><i class="bi bi-person-lines-fill me-1"></i>Sobre mi</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#modal-tab-servicios"><i class="bi bi-briefcase me-1"></i>Servicios</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#modal-tab-resenas"><i class="bi bi-chat-square-text me-1"></i>Reseñas</button></li>
+          </ul>
+        </div>
+
+        <!-- Cuerpo con tabs -->
+        <div class="modal-body px-4 pt-3 pb-4">
+          <div class="tab-content">
+
+            <!-- Sobre mi -->
+            <div class="tab-pane fade show active" id="modal-tab-sobremi">
+              <p class="mb-3" id="modal-bio"></p>
+              <div class="row g-3 mb-3" id="modal-stats"></div>
+              <div id="modal-accion"></div>
+            </div>
+
+            <!-- Servicios -->
+            <div class="tab-pane fade" id="modal-tab-servicios">
+              <div class="row g-3" id="modal-servicios"></div>
+            </div>
+
+            <!-- Resenas -->
+            <div class="tab-pane fade" id="modal-tab-resenas">
+              <div class="d-flex flex-column gap-3" id="modal-resenas"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal escribir resena -->
+  <div class="modal fade" id="modalResena" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:#0f1528; border:1px solid var(--coach-border-soft); border-radius:18px; color:#fff;">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title" id="modalResenaLabel">Calificar coach</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <div class="mb-3">
+            <label class="form-label coach-text-soft">Calificacion</label>
+            <div class="d-flex gap-2 fs-3 text-warning" id="star-rating" style="cursor:pointer;">
+              <i class="bi bi-star" data-val="1"></i>
+              <i class="bi bi-star" data-val="2"></i>
+              <i class="bi bi-star" data-val="3"></i>
+              <i class="bi bi-star" data-val="4"></i>
+              <i class="bi bi-star" data-val="5"></i>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="resena-texto" class="form-label coach-text-soft">Comentario <span class="fw-normal">(opcional)</span></label>
+            <textarea id="resena-texto" class="form-control" rows="3" placeholder="Cuentanos tu experiencia..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-dark-soft" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn coach-btn-accent">Enviar reseña</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // ─── Datos de cada coach ────────────────────────────────────────────────
+    const coachData = {
+      ca: {
+        initials:'CA', name:'Carlos Avila', specialty:'Fuerza y Potencia',
+        rating:4.5, reviews:12, isActive:true,
+        bio:'Entrenador personal certificado con mas de 8 años de experiencia en fuerza y potencia atletica. Especializado en powerlifting y preparacion fisica para deportistas de alto rendimiento.',
+        stats:[{val:'8+',lbl:'Años exp.'},{val:'40',lbl:'Clientes activos'},{val:'4.5',lbl:'Calificacion'},{val:'12',lbl:'Resenas'}],
+        services:[
+          {name:'Plan Basico', price:'$25', popular:false, items:[{ok:true,t:'1 rutina personalizada'},{ok:true,t:'Seguimiento semanal'},{ok:false,t:'Videollamadas'}]},
+          {name:'Plan Pro',   price:'$50', popular:true,  items:[{ok:true,t:'Rutinas ilimitadas'},{ok:true,t:'Seguimiento diario'},{ok:true,t:'2 videollamadas/mes'}]},
+          {name:'Plan Elite', price:'$90', popular:false, items:[{ok:true,t:'Todo el Plan Pro'},{ok:true,t:'Soporte 24/7'},{ok:true,t:'Videollamadas ilimitadas'}]}
+        ],
+        reviewsList:[
+          {initials:'AM',name:'Ana Martinez', stars:5,text:'Excelente coach, muy dedicado. Mis resultados mejoraron mucho en 3 meses.',ago:'hace 2 dias'},
+          {initials:'RG',name:'Ricardo Gomez',stars:4,text:'Muy buen plan de entrenamiento, adaptado a mi nivel.',ago:'hace 1 semana'},
+          {initials:'LP',name:'Laura Perez',  stars:4,text:'Gran profesional. Siempre disponible para resolver dudas.',ago:'hace 2 semanas'}
+        ]
+      },
+      mr: {
+        initials:'MR', name:'Maria Rios', specialty:'Cardio y Resistencia',
+        rating:4.0, reviews:8, isActive:false,
+        bio:'Especialista en entrenamiento cardiovascular y resistencia fisica. Trabaja con clientes de todos los niveles para mejorar la salud y el rendimiento aerobico.',
+        stats:[{val:'5+',lbl:'Años exp.'},{val:'25',lbl:'Clientes activos'},{val:'4.0',lbl:'Calificacion'},{val:'8',lbl:'Reseñas'}],
+        services:[
+          {name:'Plan Cardio',price:'$20',popular:false,items:[{ok:true,t:'Rutina cardio'},{ok:true,t:'Seguimiento semanal'},{ok:false,t:'Videollamadas'}]},
+          {name:'Plan Full',  price:'$45',popular:true, items:[{ok:true,t:'Cardio + fuerza'},{ok:true,t:'Seguimiento diario'},{ok:true,t:'1 videollamada/mes'}]}
+        ],
+        reviewsList:[
+          {initials:'JM',name:'Jorge Mora',  stars:4,text:'Muy buenas rutinas de cardio, me ayudo a bajar de peso.',ago:'hace 3 dias'},
+          {initials:'CL',name:'Carmen Lopez',stars:4,text:'Profesional y amable. Las sesiones son muy dinamicas.',ago:'hace 2 semanas'}
+        ]
+      },
+      lp: {
+        initials:'LP', name:'Luis Pena', specialty:'Hipertrofia',
+        rating:5.0, reviews:5, isActive:false,
+        bio:'Coach especializado en hipertrofia muscular con metodologia basada en evidencia cientifica. Ayuda a sus clientes a maximizar el crecimiento muscular de forma sostenible.',
+        stats:[{val:'6+',lbl:'Años exp.'},{val:'30',lbl:'Clientes activos'},{val:'5.0',lbl:'Calificacion'},{val:'5',lbl:'Reseñas'}],
+        services:[
+          {name:'Plan Masa', price:'$35',popular:false,items:[{ok:true,t:'Rutina de volumen'},{ok:true,t:'Plan nutricional'},{ok:false,t:'Videollamadas'}]},
+          {name:'Plan Total',price:'$65',popular:true, items:[{ok:true,t:'Rutinas ilimitadas'},{ok:true,t:'Seguimiento diario'},{ok:true,t:'4 videollamadas/mes'}]}
+        ],
+        reviewsList:[
+          {initials:'PA',name:'Pedro Alvarez',stars:5,text:'El mejor coach de hipertrofia. Resultados increibles en 2 meses.',ago:'hace 1 semana'},
+          {initials:'NR',name:'Nina Ruiz',    stars:5,text:'Metodologia muy clara y efectiva. Muy recomendado.',ago:'hace 3 semanas'}
+        ]
+      },
+      sv: {
+        initials:'SV', name:'Sofia Vargas', specialty:'Yoga y Flexibilidad',
+        rating:3.5, reviews:20, isActive:false,
+        bio:'Instructora certificada de yoga con enfoque en flexibilidad, movilidad y bienestar mental. Combina tecnicas tradicionales con metodos modernos de entrenamiento funcional.',
+        stats:[{val:'10+',lbl:'Años exp.'},{val:'60',lbl:'Clientes activos'},{val:'3.5',lbl:'Calificacion'},{val:'20',lbl:'Reseñas'}],
+        services:[
+          {name:'Plan Flex',price:'$18',popular:false,items:[{ok:true,t:'Clases de yoga'},{ok:true,t:'Rutina movilidad'},{ok:false,t:'Sesion privada'}]},
+          {name:'Plan Zen', price:'$40',popular:true, items:[{ok:true,t:'Yoga + meditacion'},{ok:true,t:'Seguimiento semanal'},{ok:true,t:'2 sesiones privadas/mes'}]}
+        ],
+        reviewsList:[
+          {initials:'BT',name:'Beatriz Torres',stars:4,text:'Clases muy relajantes y efectivas. Me ayudo con el estres.',ago:'hace 4 dias'},
+          {initials:'HV',name:'Hugo Vega',     stars:3,text:'Buena instructora, aunque los horarios son un poco inflexibles.',ago:'hace 1 mes'}
+        ]
+      }
+    };
+
+    // ─── Helpers ────────────────────────────────────────────────────────────
+    function starsHTML(n) {
+      let h = '';
+      for (let i = 1; i <= 5; i++)
+        h += `<i class="bi bi-star${i <= n ? '-fill' : (i - 0.5 <= n ? '-half' : '')}"></i>`;
+      return h;
+    }
+
+    // ─── Poblar modal al abrirlo ────────────────────────────────────────────
+    document.getElementById('modalPerfilCoach').addEventListener('show.bs.modal', e => {
+      const coachId = e.relatedTarget.dataset.coach;
+      const c = coachData[coachId];
+
+      // Cabecera
+      document.getElementById('modal-avatar').textContent      = c.initials;
+      document.getElementById('modal-nombre').textContent      = c.name;
+      document.getElementById('modal-especialidad').textContent = c.specialty;
+      document.getElementById('modal-estrellas').innerHTML     = starsHTML(c.rating);
+      document.getElementById('modal-rating-txt').textContent  = `${c.rating} (${c.reviews} reseñas)`;
+
+      // Reiniciar pestana activa a "Sobre mi"
+      document.querySelector('#coachModalTabs .nav-link.active').classList.remove('active');
+      document.querySelector('#coachModalTabs .nav-link').classList.add('active');
+      document.querySelectorAll('.tab-pane').forEach((p,i) => {
+        p.classList.toggle('show', i === 0);
+        p.classList.toggle('active', i === 0);
+      });
+
+      // Sobre mi - bio + stats
+      document.getElementById('modal-bio').textContent = c.bio;
+      document.getElementById('modal-stats').innerHTML = c.stats.map(s => `
+        <div class="col-6 col-md-3">
+          <div class="p-3 rounded-3 text-center" style="background:rgba(33,217,123,.08);border:1px solid rgba(33,217,123,.15);">
+            <p class="h4 fw-bold mb-0" style="color:var(--coach-accent);">${s.val}</p>
+            <p class="small coach-text-soft mb-0">${s.lbl}</p>
+          </div>
+        </div>`).join('');
+
+      // Sobre mi - boton de accion
+      document.getElementById('modal-accion').innerHTML = c.isActive
+        ? `<div class="d-flex gap-2 mt-2">
+             <button class="btn btn-dark-soft btn-sm" data-bs-dismiss="modal" onclick="setTimeout(()=>new bootstrap.Modal('#modalResena').show(),300)">
+               <i class="bi bi-star me-1"></i>Calificar
+             </button>
+             <button class="btn coach-icon-btn coach-icon-btn-danger" title="Desvincular">
+               <i class="bi bi-person-dash"></i>
+             </button>
+           </div>`
+        : `<button class="btn coach-btn-accent btn-sm mt-2">
+             <i class="bi bi-person-plus me-1"></i>Seleccionar Coach
+           </button>`;
+
+      // Servicios
+      const cols = Math.floor(12 / c.services.length);
+      document.getElementById('modal-servicios').innerHTML = c.services.map(s => `
+        <div class="col-12 col-md-${cols}">
+          <div class="p-3 rounded-3 h-100" style="background:#1b1f2c;border:1px solid ${s.popular ? 'var(--coach-accent)' : 'var(--coach-border-soft)'};">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <p class="fw-semibold mb-0">${s.name}</p>
+              ${s.popular ? '<span class="badge text-bg-success">Popular</span>' : '<span class="badge text-bg-secondary">Mensual</span>'}
+            </div>
+            <p class="h4 fw-bold mb-2" style="color:var(--coach-accent);">${s.price}</p>
+            <ul class="list-unstyled small coach-text-soft mb-3">
+              ${s.items.map(it => `<li class="mb-1"><i class="bi bi-${it.ok ? 'check-circle-fill" style="color:var(--coach-accent)' : 'x-circle-fill" style="color:var(--coach-danger)'}"></i> ${it.t}</li>`).join('')}
+            </ul>
+            <button class="btn coach-btn-accent btn-sm w-100">Contratar</button>
+          </div>
+        </div>`).join('');
+
+      // Resenas
+      document.getElementById('modal-resenas').innerHTML = c.reviewsList.map(r => `
+        <div class="p-3 rounded-3" style="background:#1b1f2c;border:1px solid var(--coach-border-soft);">
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="coach-user-avatar flex-shrink-0" style="width:36px;height:36px;font-size:0.85rem;">${r.initials}</div>
+            <div class="flex-grow-1">
+              <p class="fw-semibold mb-0 small">${r.name}</p>
+              <div class="text-warning" style="font-size:.8rem;">${starsHTML(r.stars)}</div>
+            </div>
+            <small class="coach-text-soft">${r.ago}</small>
+          </div>
+          <p class="small mb-0 coach-text-soft">${r.text}</p>
+        </div>`).join('');
+    });
+
+    // ─── Estrellas interactivas en modal de resena ──────────────────────────
+    const stars = document.querySelectorAll('#star-rating .bi');
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const val = +star.dataset.val;
+        stars.forEach((s, i) => { s.className = i < val ? 'bi bi-star-fill' : 'bi bi-star'; });
+      });
+      star.addEventListener('mouseover', () => {
+        const val = +star.dataset.val;
+        stars.forEach((s, i) => { s.className = i < val ? 'bi bi-star-fill' : 'bi bi-star'; });
+      });
+    });
+    document.getElementById('star-rating').addEventListener('mouseleave', () => {
+      const filled = document.querySelectorAll('#star-rating .bi-star-fill').length;
+      stars.forEach((s, i) => { s.className = i < filled ? 'bi bi-star-fill' : 'bi bi-star'; });
+    });
+  </script>
+</body>
+</html>

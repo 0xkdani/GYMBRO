@@ -2,366 +2,302 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FitTracker — Mi Rutina</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body>
+<body class="rutina-cliente-page coach-page">
+  <div class="container-fluid coach-shell px-0">
+    <div class="row g-0 min-vh-100">
 
-  <div class="app">
+      <!-- Sidebar -->
+      <aside class="col-12 col-lg-auto coach-sidebar d-flex flex-column p-3 p-lg-4">
+        <h5 class="mb-4">FitTracker</h5>
 
-    <aside class="sidebar">
+        <nav class="nav flex-column gap-2 mb-4">
+          <a class="nav-link d-flex align-items-center gap-2" href="dashboard-cliente.html">
+            <i class="bi bi-grid"></i>
+            Dashboard
+          </a>
+          <a class="nav-link active d-flex align-items-center gap-2" href="rutina-cliente.html" aria-current="page">
+            <i class="bi bi-clipboard2-pulse"></i>
+            Mi Rutina
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="progreso-cliente.html">
+            <i class="bi bi-graph-up-arrow"></i>
+            Progreso
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="mi-coach.html">
+            <i class="bi bi-people"></i>
+            Mi Coach
+          </a>
+          <a class="nav-link d-flex align-items-center gap-2" href="perfil-cliente.html">
+            <i class="bi bi-person"></i>
+            Perfil
+          </a>
+        </nav>
 
-      <div class="sidebar__logo">FitTracker</div>
-
-      <nav class="sidebar__nav" aria-label="Navegación principal">
-        <ul class="nav__list">
-
-          <li class="nav__item">
-            <a class="nav__link" href="dashboard-cliente.html">
-              <svg class="nav__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="3" y="3" width="7" height="7" rx="1"/>
-                <rect x="14" y="3" width="7" height="7" rx="1"/>
-                <rect x="3" y="14" width="7" height="7" rx="1"/>
-                <rect x="14" y="14" width="7" height="7" rx="1"/>
-              </svg>
-              <span>Dashboard</span>
-            </a>
-          </li>
-
-          <li class="nav__item nav__item--active">
-            <a class="nav__link" href="rutina-cliente.html">
-              <svg class="nav__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="7" r="3" stroke-width="2"/>
-                <path d="M5 20c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke-width="2" stroke-linecap="round"/>
-                <path d="M18 3l2 2-2 2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <span>Mi Rutina</span>
-            </a>
-          </li>
-
-          <li class="nav__item">
-            <a class="nav__link" href="progreso-cliente.html">
-              <svg class="nav__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <polyline points="3 17 9 11 13 15 21 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <polyline points="17 7 21 7 21 11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <span>Progreso</span>
-            </a>
-          </li>
-
-          <li class="nav__item">
-            <a class="nav__link" href="perfil-cliente.html">
-              <svg class="nav__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" stroke-width="2"/>
-                <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-              <span>Perfil</span>
-            </a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <div class="sidebar__user">
-        <div class="user__avatar" aria-hidden="true">JD</div>
-        <div class="user__info">
-          <span class="user__name">Juan Díaz</span>
-          <span class="user__role">Usuario</span>
-        </div>
-      </div>
-
-    </aside>
-
-    <main class="main-content">
-
-      <header class="page-header">
-        <h1 class="page-header__title">Mi Rutina</h1>
-        <p class="page-header__subtitle">Rutina de entrenamiento actual</p>
-      </header>
-
-      <section aria-label="Información de rutina">
-        <div class="routine-info">
-          <div class="routine-info__tags">
-            <span class="badge badge--filled">Hipertrofia</span>
-            <span class="badge badge--outlined">Intermedio</span>
+        <div class="mt-auto border-top border-secondary-subtle pt-3 d-flex align-items-center gap-3">
+          <div class="coach-user-avatar">JD</div>
+          <div>
+            <div class="fw-semibold">Juan Diaz</div>
+            <small class="coach-text-soft">Usuario</small>
           </div>
-          <p class="routine-info__line">
-            <span class="routine-info__key">Objetivo:</span>
-            <span class="routine-info__value">Ganancia muscular y definición</span>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="col p-4 p-xl-5">
+
+        <header class="mb-4">
+          <h1 class="display-5 fw-semibold mb-2">Mi Rutina</h1>
+          <p class="coach-text-soft mb-0">Rutina de entrenamiento actual</p>
+        </header>
+
+        <!-- Routine info card -->
+        <div class="coach-card p-3 p-md-4 mb-4">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge text-bg-success px-3 py-2">Hipertrofia</span>
+            <span class="badge rounded-pill text-bg-secondary px-3 py-2">Intermedio</span>
+          </div>
+          <p class="mb-1">
+            <span class="coach-text-soft me-1">Objetivo:</span>
+            <span class="fw-semibold">Ganancia muscular y definicion</span>
           </p>
-          <p class="routine-info__line">
-            <span class="routine-info__key">Notas:</span>
-            <span class="routine-info__note">Descansar mínimo 48h entre grupos musculares. Hidratarse correctamente.</span>
+          <p class="mb-0 coach-text-soft">
+            <i class="bi bi-info-circle me-1"></i>
+            Descansar minimo 48h entre grupos musculares. Hidratarse correctamente.
           </p>
         </div>
-      </section>
 
-      <section class="days" aria-label="Días de entrenamiento">
+        <!-- Days -->
+        <div class="d-flex flex-column gap-3">
 
-        <details class="day-card" open>
-          <summary class="day-card__summary">
-            <div class="day-card__summary-left">
-              <div class="day-card__icon-wrapper" aria-hidden="true">
-                <svg class="day-card__icon" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 4v16M18 4v16M6 12h12" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <div>
-                <p class="day-card__name">Lunes</p>
-                <p class="day-card__count">4 ejercicios · Pecho y Tríceps</p>
-              </div>
-            </div>
-            <svg class="day-card__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <polyline points="18 15 12 9 6 15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </summary>
 
-          <ul class="exercise-list">
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Press de banca plano</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
+          <!-- Lunes -->
+          <details class="coach-card" open>
+            <summary class="p-3 p-md-4 d-flex align-items-center justify-content-between" style="cursor:pointer; list-style:none;">
+              <div class="d-flex align-items-center gap-3">
+                <div class="coach-day-icon flex-shrink-0">
+                  <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <div>
+                  <p class="fw-semibold mb-0">Lunes</p>
+                  <p class="coach-text-soft small mb-0">4 ejercicios &middot; Pecho y Triceps</p>
+                </div>
               </div>
-              <div class="exercise-item__stats">
-                <span><strong>4</strong> Series</span>
-                <span><strong>10</strong> Reps</span>
-                <span><strong>90s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Press inclinado con mancuernas</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>3</strong> Series</span>
-                <span><strong>12</strong> Reps</span>
-                <span><strong>60s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Fondos en paralelas</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>3</strong> Series</span>
-                <span><strong>12</strong> Reps</span>
-                <span><strong>60s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Extensiones de tríceps en polea</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>3</strong> Series</span>
-                <span><strong>15</strong> Reps</span>
-                <span><strong>45s</strong> Descanso</span>
-              </div>
-            </li>
-          </ul>
-        </details>
+              <i class="bi bi-chevron-down coach-day-chevron ms-3"></i>
+            </summary>
 
-        <details class="day-card">
-          <summary class="day-card__summary">
-            <div class="day-card__summary-left">
-              <div class="day-card__icon-wrapper" aria-hidden="true">
-                <svg class="day-card__icon" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 4v16M18 4v16M6 12h12" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <div>
-                <p class="day-card__name">Miércoles</p>
-                <p class="day-card__count">4 ejercicios · Espalda y Bíceps</p>
-              </div>
-            </div>
-            <svg class="day-card__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <polyline points="18 15 12 9 6 15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </summary>
+            <ul class="list-unstyled mb-0 px-3 px-md-4 pb-3">
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Press de banca plano</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>4</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>10</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>90s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Press inclinado con mancuernas</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>3</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>12</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>60s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Fondos en paralelas</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>3</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>12</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>60s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Extensiones de triceps en polea</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>3</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>15</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>45s</strong> Descanso</span>
+                </div>
+              </li>
+            </ul>
+          </details>
 
-          <ul class="exercise-list">
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Dominadas</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>4</strong> Series</span>
-                <span><strong>8</strong> Reps</span>
-                <span><strong>90s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Remo con barra</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>4</strong> Series</span>
-                <span><strong>10</strong> Reps</span>
-                <span><strong>90s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Curl de bíceps con barra</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>3</strong> Series</span>
-                <span><strong>12</strong> Reps</span>
-                <span><strong>60s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Curl martillo</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>3</strong> Series</span>
-                <span><strong>12</strong> Reps</span>
-                <span><strong>45s</strong> Descanso</span>
-              </div>
-            </li>
-          </ul>
-        </details>
 
-        <details class="day-card">
-          <summary class="day-card__summary">
-            <div class="day-card__summary-left">
-              <div class="day-card__icon-wrapper" aria-hidden="true">
-                <svg class="day-card__icon" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 4v16M18 4v16M6 12h12" stroke-width="2" stroke-linecap="round"/>
-                </svg>
+          <!-- Miercoles -->
+          <details class="coach-card">
+            <summary class="p-3 p-md-4 d-flex align-items-center justify-content-between" style="cursor:pointer; list-style:none;">
+              <div class="d-flex align-items-center gap-3">
+                <div class="coach-day-icon flex-shrink-0">
+                  <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <div>
+                  <p class="fw-semibold mb-0">Miercoles</p>
+                  <p class="coach-text-soft small mb-0">4 ejercicios &middot; Espalda y Biceps</p>
+                </div>
               </div>
-              <div>
-                <p class="day-card__name">Viernes</p>
-                <p class="day-card__count">4 ejercicios · Piernas y Hombros</p>
-              </div>
-            </div>
-            <svg class="day-card__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <polyline points="18 15 12 9 6 15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </summary>
+              <i class="bi bi-chevron-down coach-day-chevron ms-3"></i>
+            </summary>
 
-          <ul class="exercise-list">
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Sentadilla con barra</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>4</strong> Series</span>
-                <span><strong>10</strong> Reps</span>
-                <span><strong>120s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Prensa de piernas</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>3</strong> Series</span>
-                <span><strong>12</strong> Reps</span>
-                <span><strong>90s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Press militar</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>4</strong> Series</span>
-                <span><strong>10</strong> Reps</span>
-                <span><strong>90s</strong> Descanso</span>
-              </div>
-            </li>
-            <li class="exercise-item">
-              <div class="exercise-item__header">
-                <p class="exercise-item__name">Elevaciones laterales</p>
-                <a class="exercise-item__video" href="#" target="_blank">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  Video
-                </a>
-              </div>
-              <div class="exercise-item__stats">
-                <span><strong>3</strong> Series</span>
-                <span><strong>15</strong> Reps</span>
-                <span><strong>45s</strong> Descanso</span>
-              </div>
-            </li>
-          </ul>
-        </details>
+            <ul class="list-unstyled mb-0 px-3 px-md-4 pb-3">
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Dominadas</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>4</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>8</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>90s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Remo con barra</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>4</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>10</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>90s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Curl de biceps con barra</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>3</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>12</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>60s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Curl martillo</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>3</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>12</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>45s</strong> Descanso</span>
+                </div>
+              </li>
+            </ul>
+          </details>
 
-      </section>
 
-    </main>
+          <!-- Viernes -->
+          <details class="coach-card">
+            <summary class="p-3 p-md-4 d-flex align-items-center justify-content-between" style="cursor:pointer; list-style:none;">
+              <div class="d-flex align-items-center gap-3">
+                <div class="coach-day-icon flex-shrink-0">
+                  <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <div>
+                  <p class="fw-semibold mb-0">Viernes</p>
+                  <p class="coach-text-soft small mb-0">4 ejercicios &middot; Piernas y Hombros</p>
+                </div>
+              </div>
+              <i class="bi bi-chevron-down coach-day-chevron ms-3"></i>
+            </summary>
 
+            <ul class="list-unstyled mb-0 px-3 px-md-4 pb-3">
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Sentadilla con barra</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>4</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>10</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>120s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Prensa de piernas</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>3</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>12</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>90s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Press militar</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>4</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>10</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>90s</strong> Descanso</span>
+                </div>
+              </li>
+              <li class="py-3 border-top border-secondary-subtle">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <p class="fw-semibold mb-0">Elevaciones laterales</p>
+                  <a href="#" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                    <i class="bi bi-play-circle"></i> Video
+                  </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge text-bg-dark px-3 py-2"><strong>3</strong> Series</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>15</strong> Reps</span>
+                  <span class="badge text-bg-dark px-3 py-2"><strong>45s</strong> Descanso</span>
+                </div>
+              </li>
+            </ul>
+          </details>
+
+        </div><!-- /days -->
+      </main>
+
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
