@@ -1,4 +1,4 @@
-﻿
+
 /* ============================================================
    COACH PAGES - COMPARTIDO
    Aplica a: dashboard-coach, GestionRutina-coach,
@@ -137,6 +137,295 @@
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
+}
+
+.dashboard-cliente-page .streak-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 145, 0, 0.28);
+  background:
+    radial-gradient(circle at 80% 24%, rgba(255, 161, 52, 0.16), rgba(255, 161, 52, 0) 34%),
+    radial-gradient(circle at 18% 82%, rgba(33, 217, 123, 0.1), rgba(33, 217, 123, 0) 42%),
+    linear-gradient(115deg, rgba(27, 31, 44, 0.98), rgba(21, 27, 40, 0.98));
+}
+
+.dashboard-cliente-page .streak-kicker {
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffbe63;
+  font-weight: 700;
+}
+
+.dashboard-cliente-page .streak-hero h2 span {
+  color: #ffbe63;
+}
+
+.dashboard-cliente-page .streak-visual {
+  width: min(350px, 100%);
+  min-height: 210px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-cliente-page .streak-visual-gear {
+  isolation: isolate;
+}
+
+.dashboard-cliente-page .streak-orb {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.dashboard-cliente-page .streak-orb-a {
+  width: 180px;
+  height: 180px;
+  right: 10px;
+  top: 4px;
+  background: radial-gradient(circle, rgba(33, 217, 123, 0.28) 0%, rgba(33, 217, 123, 0) 70%);
+  animation: orbFloatA 4.4s ease-in-out infinite;
+}
+
+.dashboard-cliente-page .streak-orb-b {
+  width: 130px;
+  height: 130px;
+  left: 16px;
+  bottom: 6px;
+  background: radial-gradient(circle, rgba(255, 157, 58, 0.25) 0%, rgba(255, 157, 58, 0) 72%);
+  animation: orbFloatB 3.8s ease-in-out infinite;
+}
+
+.dashboard-cliente-page .streak-athlete {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 330px;
+  max-height: 220px;
+  object-fit: contain;
+  filter: drop-shadow(0 24px 26px rgba(0, 0, 0, 0.48)) drop-shadow(0 0 20px rgba(33, 217, 123, 0.3));
+  animation: gearFloat 3.2s ease-in-out infinite;
+}
+
+.dashboard-cliente-page .flame-pet {
+  width: 172px;
+  height: 172px;
+  position: absolute;
+  right: -10px;
+  bottom: -22px;
+  z-index: 2;
+  transform-origin: center bottom;
+  animation: petIdle 2.8s ease-in-out infinite;
+}
+
+.dashboard-cliente-page .ember-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 154, 44, 0.28) 0%, rgba(255, 154, 44, 0) 68%);
+  filter: blur(1px);
+  animation: ringPulse 2.1s ease-in-out infinite;
+}
+
+.dashboard-cliente-page .flame-body,
+.dashboard-cliente-page .flame-core {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  clip-path: polygon(50% 0%, 63% 14%, 77% 35%, 84% 55%, 74% 78%, 60% 93%, 50% 100%, 40% 93%, 26% 78%, 16% 55%, 23% 35%, 37% 14%);
+  transform-origin: center bottom;
+}
+
+.dashboard-cliente-page .flame-body {
+  width: 118px;
+  height: 150px;
+  bottom: 8px;
+  background: linear-gradient(180deg, #ffe4b3 0%, #ffb347 34%, #ff7a18 68%, #e6460d 100%);
+  filter: drop-shadow(0 0 14px rgba(255, 121, 24, 0.46));
+  animation: flameSwing 1.5s ease-in-out infinite;
+}
+
+.dashboard-cliente-page .flame-core {
+  width: 62px;
+  height: 86px;
+  bottom: 22px;
+  background: linear-gradient(180deg, #fff8d9 0%, #ffe18e 54%, #ffac39 100%);
+  animation: flameCoreBeat 1.1s ease-in-out infinite;
+}
+
+.dashboard-cliente-page .flame-face {
+  position: absolute;
+  width: 62px;
+  height: 44px;
+  left: 50%;
+  top: 88px;
+  transform: translateX(-50%);
+}
+
+.dashboard-cliente-page .flame-face .eye {
+  position: absolute;
+  top: 6px;
+  width: 10px;
+  height: 14px;
+  background: #1f1c2e;
+  border-radius: 6px;
+  animation: blink 3.8s ease-in-out infinite;
+}
+
+.dashboard-cliente-page .flame-face .eye.left { left: 12px; }
+.dashboard-cliente-page .flame-face .eye.right { right: 12px; }
+
+.dashboard-cliente-page .flame-face .smile {
+  position: absolute;
+  left: 50%;
+  top: 24px;
+  width: 22px;
+  height: 11px;
+  border-bottom: 3px solid #1f1c2e;
+  border-radius: 0 0 16px 16px;
+  transform: translateX(-50%);
+}
+
+.dashboard-cliente-page .spark {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe5a8 0%, #ff972f 78%);
+  filter: drop-shadow(0 0 6px rgba(255, 173, 78, 0.52));
+}
+
+.dashboard-cliente-page .spark-a {
+  left: 18px;
+  bottom: 62px;
+  animation: sparkRiseA 2.2s ease-out infinite;
+}
+
+.dashboard-cliente-page .spark-b {
+  left: 132px;
+  bottom: 54px;
+  animation: sparkRiseB 1.9s ease-out infinite 0.4s;
+}
+
+.dashboard-cliente-page .spark-c {
+  left: 90px;
+  bottom: 34px;
+  animation: sparkRiseC 2.5s ease-out infinite 0.8s;
+}
+
+@keyframes petIdle {
+  0%,
+  100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes gearFloat {
+  0%,
+  100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(1.2deg); }
+}
+
+@keyframes orbFloatA {
+  0%,
+  100% { transform: translateY(0) scale(1); opacity: 0.95; }
+  50% { transform: translateY(-8px) scale(1.06); opacity: 0.75; }
+}
+
+@keyframes orbFloatB {
+  0%,
+  100% { transform: translateY(0) scale(1); opacity: 0.92; }
+  50% { transform: translateY(7px) scale(0.95); opacity: 0.7; }
+}
+
+@keyframes ringPulse {
+  0%,
+  100% { transform: scale(0.95); opacity: 0.65; }
+  50% { transform: scale(1.08); opacity: 0.92; }
+}
+
+@keyframes flameSwing {
+  0%,
+  100% { transform: translateX(-50%) rotate(-2deg) scaleY(1); }
+  35% { transform: translateX(-50%) rotate(2.3deg) scaleY(1.06); }
+  70% { transform: translateX(-50%) rotate(-1deg) scaleY(0.97); }
+}
+
+@keyframes flameCoreBeat {
+  0%,
+  100% { transform: translateX(-50%) scale(0.95); }
+  50% { transform: translateX(-50%) scale(1.08); }
+}
+
+@keyframes blink {
+  0%,
+  44%,
+  48%,
+  100% { transform: scaleY(1); }
+  46% { transform: scaleY(0.12); }
+}
+
+@keyframes sparkRiseA {
+  0% { transform: translateY(0) scale(0.8); opacity: 0.8; }
+  100% { transform: translateY(-74px) translateX(14px) scale(0.25); opacity: 0; }
+}
+
+@keyframes sparkRiseB {
+  0% { transform: translateY(0) scale(0.9); opacity: 0.75; }
+  100% { transform: translateY(-68px) translateX(-12px) scale(0.2); opacity: 0; }
+}
+
+@keyframes sparkRiseC {
+  0% { transform: translateY(0) scale(0.7); opacity: 0.65; }
+  100% { transform: translateY(-88px) translateX(8px) scale(0.18); opacity: 0; }
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-cliente-page .streak-visual {
+    width: 260px;
+    min-height: 180px;
+  }
+
+  .dashboard-cliente-page .streak-athlete {
+    max-height: 170px;
+  }
+
+  .dashboard-cliente-page .flame-pet {
+    width: 138px;
+    height: 138px;
+    right: -18px;
+    bottom: -12px;
+  }
+
+  .dashboard-cliente-page .flame-body {
+    width: 98px;
+    height: 124px;
+  }
+
+  .dashboard-cliente-page .flame-core {
+    width: 50px;
+    height: 68px;
+    bottom: 20px;
+  }
+
+  .dashboard-cliente-page .flame-face {
+    top: 68px;
+    transform: translateX(-50%) scale(0.88);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-cliente-page .flame-pet,
+  .dashboard-cliente-page .streak-athlete,
+  .dashboard-cliente-page .streak-orb,
+  .dashboard-cliente-page .ember-ring,
+  .dashboard-cliente-page .flame-body,
+  .dashboard-cliente-page .flame-core,
+  .dashboard-cliente-page .flame-face .eye,
+  .dashboard-cliente-page .spark {
+    animation: none;
+  }
 }
 
 /* ============================================================
@@ -472,3 +761,396 @@ body.lp-body { background: var(--bg); color: #fff; overflow-x: hidden; }
 /* FOOTER */
 .lp-footer { border-top: 1px solid var(--border); color: var(--soft); font-size: .9rem; }
 .lp-footer span { color: var(--accent); }
+
+/* ============================================================
+   STOPWATCH HERO - COACH
+   ============================================================ */
+
+.stopwatch-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(33, 217, 123, 0.28);
+  background:
+    radial-gradient(circle at 80% 24%, rgba(33, 217, 123, 0.16), rgba(33, 217, 123, 0) 34%),
+    radial-gradient(circle at 18% 82%, rgba(20, 150, 80, 0.1), rgba(20, 150, 80, 0) 42%),
+    linear-gradient(115deg, rgba(27, 31, 44, 0.98), rgba(21, 27, 40, 0.98));
+}
+
+.stopwatch-kicker {
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--coach-accent);
+  font-weight: 700;
+}
+
+.stopwatch-hero h2 span {
+  color: var(--coach-accent);
+}
+
+.stopwatch-visual {
+  width: min(350px, 100%);
+  min-height: 210px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stopwatch-visual-gear {
+  isolation: isolate;
+}
+
+.stopwatch-orb {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.stopwatch-orb-a {
+  width: 180px;
+  height: 180px;
+  right: 10px;
+  top: 4px;
+  background: radial-gradient(circle, rgba(33, 217, 123, 0.28) 0%, rgba(33, 217, 123, 0) 70%);
+  animation: swOrbFloatA 4.4s ease-in-out infinite;
+}
+
+.stopwatch-orb-b {
+  width: 130px;
+  height: 130px;
+  left: 16px;
+  bottom: 6px;
+  background: radial-gradient(circle, rgba(20, 180, 100, 0.25) 0%, rgba(20, 180, 100, 0) 72%);
+  animation: swOrbFloatB 3.8s ease-in-out infinite;
+}
+
+.stopwatch-pet {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  width: 160px;
+  height: 160px;
+  transform-origin: center;
+  animation: swPetIdle 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.6));
+}
+
+.stopwatch-svg {
+  --border:    #2b3042;
+  --soft:      #9ea9c5;
+}
+
+body.lp-body { background: var(--bg); color: #fff; overflow-x: hidden; }
+
+/* NAV */
+.lp-navbar {
+  background: rgba(4,7,15,.88) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(43,48,66,.6);
+}
+.lp-navbar .navbar-brand span { color: var(--accent); }
+.nav-link-lp { color: var(--soft) !important; font-weight: 500; transition: color .2s; }
+.nav-link-lp:hover { color: #fff !important; }
+.btn-accent {
+  background: var(--accent); color: #04120a !important;
+  border: none; font-weight: 700; border-radius: 10px;
+  transition: background .2s, transform .15s;
+}
+.btn-accent:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 65% -60%;
+  opacity: .92;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    rgba(4,7,15,.95) 25%,
+    rgba(4,7,15,.35) 55%,
+    rgba(4,7,15,.0) 100%);
+}
+.hero-content { position: relative; z-index: 2; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: rgba(33,217,123,.14);
+  border: 1px solid rgba(33,217,123,.3);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: .35rem 1rem;
+  font-size: .85rem; font-weight: 600;
+}
+.hero-title {
+  font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+  font-weight: 800; line-height: 1.1;
+}
+.hero-title .hl { color: var(--accent); }
+.hero-sub { color: var(--soft); font-size: 1.1rem; line-height: 1.7; max-width: 480px; }
+.btn-outline-lp {
+  color: #fff; border: 1px solid var(--border);
+  border-radius: 12px; font-weight: 600;
+  transition: border-color .2s, background .2s;
+  background: transparent;
+}
+.btn-outline-lp:hover { border-color: #fff; background: rgba(255,255,255,.06); color: #fff; }
+
+/* STATS */
+.stats-bar { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.stat-num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+.stat-lbl { color: var(--soft); font-size: .88rem; }
+
+/* FEATURE CARDS */
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  transition: border-color .2s, transform .2s;
+  height: 100%;
+}
+.feature-card:hover { border-color: rgba(33,217,123,.4); transform: translateY(-4px); }
+.feature-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: rgba(33,217,123,.14);
+  color: var(--accent);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+
+/* COMO FUNCIONA */
+.how-section {
+  background: linear-gradient(180deg, rgba(33,217,123,.04), transparent);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.step-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--accent); color: #04120a;
+  font-weight: 800; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* CTA */
+.cta-card {
+  background: linear-gradient(135deg, rgba(33,217,123,.12), rgba(27,31,44,.96));
+  border: 1px solid rgba(33,217,123,.25);
+  border-radius: 24px;
+}
+
+/* EYEBROW */
+.eyebrow { color: var(--accent); font-weight: 700; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; }
+
+/* FOOTER */
+.lp-footer { border-top: 1px solid var(--border); color: var(--soft); font-size: .9rem; }
+.lp-footer span { color: var(--accent); }
+
+/* ============================================================
+   STOPWATCH HERO - COACH
+   ============================================================ */
+
+.stopwatch-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(33, 217, 123, 0.28);
+  background:
+    radial-gradient(circle at 80% 24%, rgba(33, 217, 123, 0.16), rgba(33, 217, 123, 0) 34%),
+    radial-gradient(circle at 18% 82%, rgba(20, 150, 80, 0.1), rgba(20, 150, 80, 0) 42%),
+    linear-gradient(115deg, rgba(27, 31, 44, 0.98), rgba(21, 27, 40, 0.98));
+}
+
+.stopwatch-kicker {
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--coach-accent);
+  font-weight: 700;
+}
+
+.stopwatch-hero h2 span {
+  color: var(--coach-accent);
+}
+
+.stopwatch-visual {
+  width: min(350px, 100%);
+  min-height: 220px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stopwatch-visual-gear {
+  isolation: isolate;
+}
+
+.stopwatch-orb {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.stopwatch-orb-a {
+  width: 180px;
+  height: 180px;
+  right: 10px;
+  top: 4px;
+  background: radial-gradient(circle, rgba(33, 217, 123, 0.28) 0%, rgba(33, 217, 123, 0) 70%);
+  animation: swOrbFloatA 4.4s ease-in-out infinite;
+}
+
+.stopwatch-orb-b {
+  width: 130px;
+  height: 130px;
+  left: 16px;
+  bottom: 6px;
+  background: radial-gradient(circle, rgba(20, 180, 100, 0.25) 0%, rgba(20, 180, 100, 0) 72%);
+  animation: swOrbFloatB 3.8s ease-in-out infinite;
+}
+
+.stopwatch-pet {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  width: 160px;
+  height: 160px;
+  transform-origin: center;
+  animation: swPetIdle 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.6));
+}
+
+.stopwatch-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sw-body {
+  fill: #1a1f30;
+  stroke: var(--coach-accent);
+  stroke-width: 5;
+  filter: drop-shadow(0 0 12px rgba(33, 217, 123, 0.3));
+}
+
+.sw-face {
+  fill: #090e1a;
+  stroke: #1ece74;
+  stroke-width: 1.5;
+}
+
+.sw-btn-top {
+  fill: var(--coach-accent);
+  animation: swBtnPress 2s infinite;
+  transform-origin: 50px 16px;
+}
+
+.sw-btn-base {
+  fill: #1a1f30;
+  stroke: var(--coach-accent);
+  stroke-width: 2;
+}
+
+.sw-btn-side {
+  fill: #1ece74;
+}
+
+.sw-tick {
+  stroke: var(--coach-text-soft);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.sw-subdial {
+  fill: none;
+  stroke: #2a2f41;
+  stroke-width: 2;
+}
+
+.sw-sub-hand {
+  stroke: var(--coach-text-soft);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  transform-origin: 50px 42px;
+  animation: swSubTickTock 12s linear 1 forwards;
+}
+
+.sw-hand {
+  stroke: var(--coach-accent);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transform-origin: 50px 55px;
+  animation: swTickTock 2s steps(8, end) 1 forwards;
+  filter: drop-shadow(0 0 6px rgba(33, 217, 123, 0.9));
+}
+
+.sw-center {
+  fill: #ffffff;
+}
+
+.sw-ring {
+  fill: none;
+  stroke: rgba(33, 217, 123, 0.5);
+  stroke-width: 2.5;
+  stroke-dasharray: 263.89;
+  stroke-dashoffset: 263.89;
+  animation: swRingSpin 2s ease-in-out 1 forwards;
+  transform-origin: 50px 55px;
+}
+
+@keyframes swPetIdle {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+@keyframes swOrbFloatA {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.95; }
+  50% { transform: translateY(-8px) scale(1.06); opacity: 0.75; }
+}
+
+@keyframes swOrbFloatB {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.92; }
+  50% { transform: translateY(7px) scale(0.95); opacity: 0.7; }
+}
+
+@keyframes swTickTock {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes swSubTickTock {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes swBtnPress {
+  0%, 10%, 100% { transform: scaleY(1); }
+  5% { transform: scaleY(0.6); }
+}
+
+@keyframes swRingSpin {
+  0% { transform: rotate(0deg); stroke-dashoffset: 263.89; }
+  50% { stroke-dashoffset: 0; }
+  100% { transform: rotate(360deg); stroke-dashoffset: -263.89; }
+}
+
+@media (max-width: 575.98px) {
+  .stopwatch-visual { width: 260px; min-height: 180px; }
+  .stopwatch-pet { width: 130px; height: 130px; right: 0; bottom: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stopwatch-pet, .stopwatch-orb, .sw-btn-top, .sw-hand, .sw-sub-hand, .sw-ring { animation: none; }
+}
