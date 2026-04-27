@@ -1,4 +1,76 @@
 (() => {
+  function initLoginPage() {
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('correo');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('loginSubmitBtn');
+    const feedbackEl = document.getElementById('loginFeedback');
+    if (!loginForm || !emailInput || !passwordInput || !submitBtn || !feedbackEl) return;
+
+    const API_BASE_URL = 'http://localhost:5000';
+
+    function setFeedback(message, type) {
+      feedbackEl.textContent = message;
+      feedbackEl.style.display = 'block';
+      feedbackEl.style.color = type === 'error' ? '#ff8f8f' : '#89f5c8';
+    }
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      if (!email || !password) {
+        setFeedback('Completa correo y contraseña.', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Entrando...';
+      feedbackEl.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          setFeedback(data.message || 'No fue posible iniciar sesión.', 'error');
+          return;
+        }
+
+        const usuario = data.Usuario;
+        const token = data.token;
+
+        if (!usuario || !token) {
+          setFeedback('Respuesta de login incompleta.', 'error');
+          return;
+        }
+
+        localStorage.setItem('fittracker_token', token);
+        localStorage.setItem('fittracker_user', JSON.stringify(usuario));
+
+        setFeedback('Login exitoso. Redirigiendo...', 'success');
+
+        if (usuario.rol === 'coach') {
+          window.location.href = 'dashboard-coach.html';
+        } else {
+          window.location.href = 'dashboard-cliente.html';
+        }
+      } catch (error) {
+        setFeedback('No se pudo conectar con el servidor.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Entrar';
+      }
+    });
+  }
+
   function initGestionRutinaCoach() {
     const catalogoModalEl = document.getElementById('catalogoEjerciciosModal');
     const formModalEl = document.getElementById('formEjercicioModal');
@@ -241,6 +313,7 @@
     });
   }
 
+  initLoginPage();
   initGestionRutinaCoach();
   initCrearRutinaCoach();
 })();
