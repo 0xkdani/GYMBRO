@@ -79,6 +79,74 @@ const resenaCoachSchema = new mongoose.Schema({
 });
 
 const ResenaCoach = mongoose.model('ResenaCoach', resenaCoachSchema);
+
+const ejercicioSchema = new mongoose.Schema({
+    nombreEjercicio: { type: String, required: true },
+    descripcion: { type: String },
+    grupoMuscular: { type: String, required: true },
+    fechaCreacion: { type: Date, default: Date.now }
+});
+
+const Ejercicio = mongoose.model('Ejercicio', ejercicioSchema);
+
+const rutinaSchema = new mongoose.Schema({
+    coachId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+    nombreRutina: { type: String, required: true },
+    objetivo: {
+        type: String,
+        enum: ['Hipertrofia', 'Fuerza', 'Acondicionamiento', 'Resistencia'],
+        required: true
+    },
+    nivel: {
+        type: String,
+        enum: ['Principiante', 'Intermedio', 'Avanzado'],
+        required: true
+    },
+    notas: { type: String },
+    ejercicios: [{
+        dia: {
+            type: String,
+            enum: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],
+            required: true
+        },
+        ejercicio: { type: String, required: true },
+        series: { type: Number, required: true, min: 1 },
+        repeticiones: { type: String, required: true },
+        descanso: { type: String, default: '-' }
+    }],
+    fechaCreacion: { type: Date, default: Date.now },
+    estado: {
+        type: String,
+        enum: ['activa', 'inactiva'],
+        default: 'activa'
+    }
+});
+
+const Rutina = mongoose.model('Rutina', rutinaSchema);
+
+const asignacionRutinaSchema = new mongoose.Schema({
+    clienteId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+    coachId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+    rutinaId: { type: mongoose.Schema.Types.ObjectId, ref: 'Rutina', required: true },
+    fechaAsignacion: { type: Date, default: Date.now },
+    estado: {
+        type: String,
+        enum: ['activa', 'inactiva'],
+        default: 'activa'
+    }
+});
+
+const AsignacionRutina = mongoose.model('AsignacionRutina', asignacionRutinaSchema);
+
+const progresoClienteSchema = new mongoose.Schema({
+    clienteId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+    fecha: { type: Date, required: true },
+    peso: { type: Number, required: true, min: 1, max: 500 },
+    notas: { type: String, default: '' },
+    fechaRegistro: { type: Date, default: Date.now }
+});
+
+const ProgresoCliente = mongoose.model('ProgresoCliente', progresoClienteSchema);
  
 app.post('/api/register', async (req, res) => {
     const { nombre, apellido, email, password, rol } = req.body;
@@ -137,10 +205,6 @@ app.post('/api/coach-cliente', async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(clienteId) || !mongoose.Types.ObjectId.isValid(coachId)) {
-        return res.status(400).json({ message: 'clienteId y coachId deben ser ids validos de MongoDB' });
-    }
-
     const cliente = await mongoose.model('Usuario').findById(clienteId);
     if (!cliente || cliente.rol !== 'cliente') {
         return res.status(400).json({ message: 'El cliente no existe o no tiene rol cliente' });
@@ -170,10 +234,6 @@ app.post('/api/resenas-coach', async (req, res) => {
         return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(clienteId) || !mongoose.Types.ObjectId.isValid(coachId)) {
-        return res.status(400).json({ message: 'clienteId y coachId deben ser ids validos de MongoDB' });
-    }
-
     if (calificacion < 1 || calificacion > 5) {
         return res.status(400).json({ message: 'La calificacion debe ser entre 1 y 5' });
     }
@@ -192,7 +252,185 @@ app.post('/api/resenas-coach', async (req, res) => {
 
     await nuevaResena.save();
 
-    res.status(201).json({ message: 'Resena registrada exitosamente' });
+    res.status(201).json({ message: 'Reseña registrada exitosamente' });
+});
+
+app.post('/api/ejercicios', async (req, res) => {
+    const { nombreEjercicio, descripcion, grupoMuscular, fechaCreacion } = req.body;
+
+    if (!nombreEjercicio || !grupoMuscular) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    }
+
+    const nuevoEjercicio = new Ejercicio({ nombreEjercicio, descripcion, grupoMuscular, fechaCreacion: fechaCreacion || new Date() });
+
+    await nuevoEjercicio.save();
+
+    res.status(201).json({ message: 'Ejercicio creado exitosamente' });
+});
+
+app.post('/api/rutinas', async (req, res) => {
+    const { coachId, nombreRutina, objetivo, nivel, notas, ejercicios, fechaCreacion, estado } = req.body;
+    const diasValidos = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+
+    if (!coachId || !nombreRutina || !objetivo || !nivel) {
+        return res.status(400).json({ message: 'Todos los campos obligatorios de la rutina deben enviarse' });
+    }
+
+    if (!Array.isArray(ejercicios) || ejercicios.length === 0) {
+        return res.status(400).json({ message: 'La rutina debe incluir al menos un ejercicio' });
+    }
+
+    const coach = await mongoose.model('Usuario').findById(coachId);
+    if (!coach || coach.rol !== 'coach') {
+        return res.status(400).json({ message: 'El coach no existe o no tiene rol coach' });
+    }
+
+    const ejerciciosCatalogo = await Ejercicio.find({}, 'nombreEjercicio').lean();
+    const nombresEjerciciosCatalogo = new Set(
+        ejerciciosCatalogo
+            .map((ejercicio) => String(ejercicio.nombreEjercicio || '').trim().toLowerCase())
+            .filter(Boolean)
+    );
+
+    const nombreRutinaLimpio = String(nombreRutina).trim();
+    if (!nombreRutinaLimpio) {
+        return res.status(400).json({ message: 'El nombre de la rutina es obligatorio' });
+    }
+
+    const erroresEjercicios = [];
+    const ejerciciosNormalizados = ejercicios.map((item) => ({
+        dia: item.dia ? String(item.dia).trim() : '',
+        ejercicio: item.ejercicio ? String(item.ejercicio).trim() : '',
+        series: Number(item.series),
+        repeticiones: item.repeticiones ? String(item.repeticiones).trim() : '',
+        descanso: item.descanso ? String(item.descanso).trim() : '-'
+    }));
+
+    ejerciciosNormalizados.forEach((item, index) => {
+        if (!item.ejercicio) {
+            erroresEjercicios.push(`Fila ${index + 1}: ejercicio es obligatorio`);
+        } else if (!nombresEjerciciosCatalogo.has(item.ejercicio.toLowerCase())) {
+            erroresEjercicios.push(`Fila ${index + 1}: el ejercicio no existe en el catalogo`);
+        }
+
+        if (!item.dia || !diasValidos.includes(item.dia)) {
+            erroresEjercicios.push(`Fila ${index + 1}: dia invalido`);
+        }
+
+        if (!Number.isFinite(item.series) || item.series < 1) {
+            erroresEjercicios.push(`Fila ${index + 1}: series debe ser un numero mayor o igual a 1`);
+        }
+
+        if (!item.repeticiones) {
+            erroresEjercicios.push(`Fila ${index + 1}: repeticiones es obligatorio`);
+        }
+    });
+
+    if (erroresEjercicios.length > 0) {
+        return res.status(400).json({
+            message: 'Hay errores en los ejercicios enviados',
+            errores: erroresEjercicios
+        });
+    }
+
+    const nuevaRutina = new Rutina({
+        coachId,
+        nombreRutina: nombreRutinaLimpio,
+        objetivo,
+        nivel,
+        notas: notas ? String(notas).trim() : '',
+        ejercicios: ejerciciosNormalizados,
+        fechaCreacion: fechaCreacion || new Date(),
+        estado: estado || 'activa'
+    });
+
+    await nuevaRutina.save();
+
+    res.status(201).json({
+        message: 'Rutina creada exitosamente',
+        rutina: {
+            id: nuevaRutina._id,
+            nombreRutina: nuevaRutina.nombreRutina,
+            totalEjercicios: nuevaRutina.ejercicios.length
+        }
+    });
+});
+
+app.post('/api/asignacion-rutinas', async (req, res) => {
+    const { clienteId, coachId, rutinaId, fechaAsignacion, estado } = req.body;
+
+    if (!clienteId || !coachId || !rutinaId) {
+        return res.status(400).json({ message: 'clienteId, coachId y rutinaId son obligatorios' });
+    }
+
+    const nuevaAsignacion = new AsignacionRutina({
+        clienteId,
+        coachId,
+        rutinaId,
+        fechaAsignacion: fechaAsignacion || new Date(),
+        estado: estado || 'activa'
+    });
+
+    await nuevaAsignacion.save();
+
+    res.status(201).json({
+        message: 'Asignacion de rutina creada exitosamente',
+        asignacion: {
+            id: nuevaAsignacion._id,
+            clienteId: nuevaAsignacion.clienteId,
+            coachId: nuevaAsignacion.coachId,
+            rutinaId: nuevaAsignacion.rutinaId,
+            estado: nuevaAsignacion.estado
+        }
+    });
+});
+
+app.post('/api/progresos', async (req, res) => {
+    const { clienteId, fecha, peso, notas } = req.body;
+
+    if (!clienteId || !fecha || peso == null) {
+        return res.status(400).json({ message: 'clienteId, fecha y peso son obligatorios' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(clienteId)) {
+        return res.status(400).json({ message: 'clienteId no tiene un formato valido' });
+    }
+
+    const fechaProgreso = new Date(fecha);
+    if (Number.isNaN(fechaProgreso.getTime())) {
+        return res.status(400).json({ message: 'La fecha es invalida' });
+    }
+
+    const pesoNumerico = Number(peso);
+    if (!Number.isFinite(pesoNumerico) || pesoNumerico <= 0) {
+        return res.status(400).json({ message: 'El peso debe ser un numero mayor a 0' });
+    }
+
+    const cliente = await Usuario.findById(clienteId);
+    if (!cliente || cliente.rol !== 'cliente') {
+        return res.status(400).json({ message: 'El cliente no existe o no tiene rol cliente' });
+    }
+
+    const nuevoProgreso = new ProgresoCliente({
+        clienteId,
+        fecha: fechaProgreso,
+        peso: pesoNumerico,
+        notas: notas ? String(notas).trim() : ''
+    });
+
+    await nuevoProgreso.save();
+
+    res.status(201).json({
+        message: 'Progreso guardado exitosamente',
+        progreso: {
+            id: nuevoProgreso._id,
+            clienteId: nuevoProgreso.clienteId,
+            fecha: nuevoProgreso.fecha,
+            peso: nuevoProgreso.peso,
+            notas: nuevoProgreso.notas
+        }
+    });
 });
 
 app.get('/api/', (req, res) => {
