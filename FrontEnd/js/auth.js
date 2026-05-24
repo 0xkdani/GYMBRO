@@ -203,6 +203,33 @@
           el.parentNode.innerHTML = `<i class="bi bi-envelope me-1"></i>${user.email}`;
         }
       });
+
+      // Actualizar la fecha de registro y los días activos a partir de su ObjectId de MongoDB
+      let joinDate = new Date();
+      let activeDays = 1;
+      if (user.id && user.id.length === 24) {
+        try {
+          const timestamp = parseInt(user.id.substring(0, 8), 16) * 1000;
+          joinDate = new Date(timestamp);
+          const diffTime = Math.abs(new Date() - joinDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          activeDays = Math.max(1, diffDays);
+        } catch (e) {
+          console.error('Error calculando fecha desde ObjectId', e);
+        }
+      }
+
+      const joinDateEl = document.getElementById('profile-join-date');
+      if (joinDateEl) {
+        const options = { year: 'numeric', month: 'long' };
+        const formattedDate = joinDate.toLocaleDateString('es-ES', options);
+        joinDateEl.innerHTML = `<i class="bi bi-calendar3 me-1"></i>Miembro desde ${formattedDate}`;
+      }
+
+      const activeDaysEl = document.getElementById('profile-active-days');
+      if (activeDaysEl) {
+        activeDaysEl.textContent = `${activeDays} ${activeDays === 1 ? 'día' : 'días'} activo`;
+      }
     }
 
     renderUserData(currentUser);

@@ -28,6 +28,7 @@
     if (typeof window.initPasswordChange === 'function') window.initPasswordChange();
     if (typeof window.initDashboardCliente === 'function') window.initDashboardCliente();
     if (typeof window.initProgresoCliente === 'function') window.initProgresoCliente();
+    if (typeof window.initRutinaCliente === 'function') window.initRutinaCliente();
     if (typeof window.initLogout === 'function') window.initLogout();
     if (typeof window.initMiCoach === 'function') window.initMiCoach();
     if (typeof window.initGestionRutinaCoach === 'function') window.initGestionRutinaCoach();

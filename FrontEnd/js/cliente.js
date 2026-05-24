@@ -144,6 +144,14 @@
     const currentUser = JSON.parse(localStorage.getItem('fittracker_user') || 'null');
     if (!currentUser) return;
 
+    // Actualizar sidebar con el nombre y avatar reales del cliente
+    const fullName = `${currentUser.nombre} ${currentUser.apellido}`;
+    const initials = (currentUser.nombre.charAt(0) + (currentUser.apellido.charAt(0) || '')).toUpperCase();
+    const sidebarName = document.querySelector('.coach-sidebar .fw-semibold');
+    if (sidebarName) sidebarName.textContent = fullName;
+    const sidebarAvatar = document.querySelector('.coach-sidebar .coach-user-avatar');
+    if (sidebarAvatar) sidebarAvatar.textContent = initials;
+
     const misCoachesContainer = document.getElementById('mis-coaches-container');
     const disponiblesContainer = document.getElementById('coaches-disponibles-container');
     if (!misCoachesContainer || !disponiblesContainer) return;
@@ -472,6 +480,8 @@
     const pesoEl = document.getElementById('dash-ultimo-peso');
     const sesionEl = document.getElementById('dash-ultima-sesion');
     const coachesContainer = document.getElementById('dash-mis-coaches');
+    const rutinasActivasEl = document.getElementById('dash-rutinas-activas');
+    const totalEjerciciosEl = document.getElementById('dash-total-ejercicios');
 
     // 1. Cargar último peso y sesión desde progresos
     async function loadProgresos() {
@@ -483,18 +493,53 @@
         if (data.length > 0) {
           data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
           const ultimo = data[0];
-          pesoEl.textContent = `${ultimo.peso} kg`;
+          if (pesoEl) pesoEl.textContent = `${ultimo.peso} kg`;
           
           const fechaObj = new Date(ultimo.fecha);
           const dia = fechaObj.getUTCDate();
           const mes = fechaObj.toLocaleDateString('es-ES', { month: 'short', timeZone: 'UTC' });
-          sesionEl.textContent = `${dia} ${mes}`;
+          if (sesionEl) sesionEl.textContent = `${dia} ${mes}`;
         } else {
-          pesoEl.textContent = '-- kg';
-          sesionEl.textContent = '--';
+          if (pesoEl) pesoEl.textContent = '-- kg';
+          if (sesionEl) sesionEl.textContent = '--';
         }
       } catch (e) {
         console.error('Error cargando progresos', e);
+        if (pesoEl) pesoEl.textContent = '-- kg';
+        if (sesionEl) sesionEl.textContent = '--';
+      }
+    }
+
+    // 2. Cargar información de rutina (rutinas activas y cantidad de ejercicios)
+    async function loadRutinaDashboard() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/asignacion-rutinas`);
+        if (!response.ok) throw new Error();
+        const asignaciones = await response.json();
+
+        // Buscar asignación activa del cliente actual
+        const asignacionActiva = asignaciones.find(a => 
+          a.clienteId && a.clienteId._id === currentUser.id && a.estado === 'activa'
+        );
+
+        if (asignacionActiva && asignacionActiva.rutinaId) {
+          if (rutinasActivasEl) rutinasActivasEl.textContent = '1';
+          
+          const rutinaRes = await fetch(`${API_BASE_URL}/api/rutinas/${asignacionActiva.rutinaId._id}`);
+          if (rutinaRes.ok) {
+            const rutina = await rutinaRes.json();
+            if (totalEjerciciosEl) totalEjerciciosEl.textContent = rutina.ejercicios ? rutina.ejercicios.length : '0';
+          } else {
+            if (totalEjerciciosEl) totalEjerciciosEl.textContent = '0';
+          }
+        } else {
+          if (rutinasActivasEl) rutinasActivasEl.textContent = '0';
+          if (totalEjerciciosEl) totalEjerciciosEl.textContent = '0';
+        }
+      } catch (e) {
+        console.error('Error cargando rutina para dashboard', e);
+        if (rutinasActivasEl) rutinasActivasEl.textContent = '0';
+        if (totalEjerciciosEl) totalEjerciciosEl.textContent = '0';
       }
     }
 
@@ -518,7 +563,7 @@
       }
     }
 
-    // 2. Cargar mis coaches activos
+    // 3. Cargar mis coaches activos
     async function loadCoaches() {
       try {
         const [coachesRes, vinculacionesRes] = await Promise.all([
@@ -534,7 +579,7 @@
           const activeCoaches = allCoaches.filter(c => myCoachesIds.has(c._id));
 
           if (activeCoaches.length === 0) {
-            coachesContainer.innerHTML = '<p class="text-muted p-3">Aún no has seleccionado a ningún coach.</p>';
+            if (coachesContainer) coachesContainer.innerHTML = '<p class="text-muted p-3">Aún no has seleccionado a ningún coach.</p>';
             return;
           }
 
@@ -560,19 +605,197 @@
               </div>
             `;
           }
-          coachesContainer.innerHTML = html;
+          if (coachesContainer) coachesContainer.innerHTML = html;
         }
       } catch (e) {
         console.error('Error cargando coaches', e);
-        coachesContainer.innerHTML = '<p class="text-danger p-3">Error al cargar coaches.</p>';
+        if (coachesContainer) coachesContainer.innerHTML = '<p class="text-danger p-3">Error al cargar coaches.</p>';
       }
     }
 
     loadProgresos();
+    loadRutinaDashboard();
     loadCoaches();
+  }
+
+  async function initRutinaCliente() {
+    const isRutinaPage = document.querySelector('.rutina-cliente-page');
+    if (!isRutinaPage) return;
+
+    const API_BASE_URL = 'http://127.0.0.1:5000';
+    const currentUser = JSON.parse(localStorage.getItem('fittracker_user') || 'null');
+    if (!currentUser) return;
+
+    // Actualizar sidebar con el nombre y avatar reales del cliente
+    const fullName = `${currentUser.nombre} ${currentUser.apellido}`;
+    const initials = (currentUser.nombre.charAt(0) + (currentUser.apellido.charAt(0) || '')).toUpperCase();
+    const sidebarName = document.querySelector('.coach-sidebar .fw-semibold');
+    if (sidebarName) sidebarName.textContent = fullName;
+    const sidebarAvatar = document.querySelector('.coach-sidebar .coach-user-avatar');
+    if (sidebarAvatar) sidebarAvatar.textContent = initials;
+
+    // Contenedor a actualizar en la UI
+    const containerElement = document.getElementById('rutina-cliente-container');
+    if (!containerElement) return;
+
+    try {
+      // 1. Obtener todas las asignaciones y el catálogo de ejercicios
+      const [asignacionesRes, ejerciciosRes] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/asignacion-rutinas`),
+        fetch(`${API_BASE_URL}/api/ejercicios`)
+      ]);
+
+      if (!asignacionesRes.ok) throw new Error('Error al conectar con el servidor');
+      const asignaciones = await asignacionesRes.json();
+
+      // Crear un mapeo rápido de ejercicio -> grupo muscular para mostrar en la cabecera del día
+      const ejerciciosCatalogo = ejerciciosRes.ok ? await ejerciciosRes.json() : [];
+      const ejercicioGrupoMap = {};
+      ejerciciosCatalogo.forEach(ej => {
+        if (ej.nombreEjercicio) {
+          ejercicioGrupoMap[ej.nombreEjercicio.toLowerCase().trim()] = ej.grupoMuscular;
+        }
+      });
+
+      // 2. Buscar la asignación activa para este cliente en específico
+      const asignacionActiva = asignaciones.find(a => 
+        a.clienteId && a.clienteId._id === currentUser.id && a.estado === 'activa'
+      );
+
+      if (!asignacionActiva || !asignacionActiva.rutinaId) {
+        // Renderizar estado de no tener rutina
+        containerElement.innerHTML = `
+          <div class="coach-card p-5 text-center">
+            <div class="mb-3 text-warning" style="font-size: 3.5rem;">
+              <i class="bi bi-clipboard2-x-fill"></i>
+            </div>
+            <h3 class="h4 text-white mb-2">Aún no tienes una rutina asignada</h3>
+            <p class="coach-text-soft max-width-md mx-auto mb-4" style="max-width: 500px;">
+              Ponte en contacto con tu coach para que diseñe un plan de entrenamiento adaptado a tus objetivos y nivel.
+            </p>
+            <a href="mi-coach.html" class="btn coach-btn-accent px-4 py-2">
+              <i class="bi bi-people me-2"></i> Ir a Mi Coach
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      // 3. Obtener la rutina completa (con todos sus ejercicios) usando su ID
+      const rutinaRes = await fetch(`${API_BASE_URL}/api/rutinas/${asignacionActiva.rutinaId._id}`);
+      if (!rutinaRes.ok) throw new Error('Error al cargar la rutina asignada');
+      const rutina = await rutinaRes.json();
+
+      // Renderizar la sección superior con el resumen de la rutina
+      const infoCardHTML = `
+        <div class="coach-card p-3 p-md-4 mb-4">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge text-bg-success px-3 py-2">${rutina.objetivo}</span>
+            <span class="badge rounded-pill text-bg-secondary px-3 py-2">${rutina.nivel}</span>
+          </div>
+          <h2 class="h3 text-white mb-2">${rutina.nombreRutina}</h2>
+          ${rutina.notes ? `
+            <p class="mb-0 coach-text-soft">
+              <i class="bi bi-info-circle me-1"></i>
+              ${rutina.notes}
+            </p>
+          ` : (rutina.notas ? `
+            <p class="mb-0 coach-text-soft">
+              <i class="bi bi-info-circle me-1"></i>
+              ${rutina.notas}
+            </p>
+          ` : '<p class="mb-0 coach-text-soft"><i class="bi bi-info-circle me-1"></i> Sigue las indicaciones y descansa correctamente.</p>')}
+        </div>
+      `;
+
+      // Organizar ejercicios por día de la semana
+      const diasOrdenados = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+      const ejerciciosPorDia = {};
+      
+      rutina.ejercicios.forEach(ej => {
+        if (!ejerciciosPorDia[ej.dia]) {
+          ejerciciosPorDia[ej.dia] = [];
+        }
+        ejerciciosPorDia[ej.dia].push(ej);
+      });
+
+      // Renderizar los días
+      let daysHTML = '<div class="d-flex flex-column gap-3">';
+      let diasRenderizados = 0;
+
+      diasOrdenados.forEach(dia => {
+        const ejerciciosDia = ejerciciosPorDia[dia];
+        if (!ejerciciosDia || ejerciciosDia.length === 0) return;
+
+        diasRenderizados++;
+
+        // Obtener grupos musculares únicos trabajados este día
+        const gruposDia = [...new Set(ejerciciosDia.map(ej => {
+          return ejercicioGrupoMap[ej.ejercicio.toLowerCase().trim()] || '';
+        }).filter(Boolean))];
+
+        const gruposString = gruposDia.length > 0 ? gruposDia.join(' & ') : 'General';
+        const numEjercicios = ejerciciosDia.length;
+        const isOpen = diasRenderizados === 1 ? 'open' : ''; // Solo abre el primer día renderizado por defecto
+
+        daysHTML += `
+          <details class="coach-card" ${isOpen}>
+            <summary class="p-3 p-md-4 d-flex align-items-center justify-content-between" style="cursor:pointer; list-style:none;">
+              <div class="d-flex align-items-center gap-3">
+                <div class="coach-day-icon flex-shrink-0">
+                  <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <div>
+                  <p class="fw-semibold mb-0">${dia}</p>
+                  <p class="coach-text-soft small mb-0">${numEjercicios} ${numEjercicios === 1 ? 'ejercicio' : 'ejercicios'} &middot; ${gruposString}</p>
+                </div>
+              </div>
+              <i class="bi bi-chevron-down coach-day-chevron ms-3"></i>
+            </summary>
+
+            <ul class="list-unstyled mb-0 px-3 px-md-4 pb-3">
+              ${ejerciciosDia.map(ej => {
+                // Enlace dinámico e interactivo a una búsqueda de YouTube para la correcta ejecución del ejercicio
+                const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(ej.ejercicio + ' ejecucion correcta')}`;
+                return `
+                  <li class="py-3 border-top border-secondary-subtle">
+                    <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                      <p class="fw-semibold mb-0 text-white">${ej.ejercicio}</p>
+                      <a href="${youtubeUrl}" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
+                        <i class="bi bi-play-circle"></i> Video
+                      </a>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <span class="badge text-bg-dark px-3 py-2"><strong>${ej.series}</strong> Series</span>
+                      <span class="badge text-bg-dark px-3 py-2"><strong>${ej.repeticiones}</strong> Reps</span>
+                      <span class="badge text-bg-dark px-3 py-2"><strong>${ej.descanso || '-'}</strong> Descanso</span>
+                    </div>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </details>
+        `;
+      });
+
+      daysHTML += '</div>';
+
+      // Actualizar el DOM de forma integrada en el contenedor dinámico
+      containerElement.innerHTML = infoCardHTML + daysHTML;
+
+    } catch (error) {
+      console.error('Error al cargar la rutina del cliente:', error);
+      containerElement.innerHTML = `
+        <div class="alert alert-danger font-medium p-4 rounded-3" role="alert" style="background-color: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.2); color: #f8d7da;">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          No se pudo conectar con el servidor para cargar las rutinas. Por favor, recarga la página.
+        </div>
+      `;
+    }
   }
 
   window.initProgresoCliente = initProgresoCliente;
   window.initMiCoach = initMiCoach;
   window.initDashboardCliente = initDashboardCliente;
+  window.initRutinaCliente = initRutinaCliente;
 })();
