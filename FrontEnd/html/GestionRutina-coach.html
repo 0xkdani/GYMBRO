@@ -63,86 +63,11 @@
           </div>
         </section>
 
-        <section class="d-flex flex-column gap-3">
-          <article class="coach-card p-4">
-            <div class="d-flex flex-column flex-xl-row justify-content-between gap-3">
-              <div>
-                <h2 class="h3 mb-3">Rutina de Fuerza - Fase 1</h2>
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                  <span class="coach-pill coach-pill-accent">Hipertrofia</span>
-                  <span class="coach-pill coach-pill-muted">Intermedio</span>
-                </div>
-                <div class="d-flex flex-wrap gap-4 coach-text-soft">
-                  <span><strong class="text-white">24</strong> ejercicios</span>
-                  <span>Creada el 14 ene 2026</span>
-                </div>
-              </div>
-
-              <div class="d-flex gap-2 align-items-start">
-                <button class="btn coach-icon-btn coach-icon-btn-success" title="Asignar usuarios"><i class="bi bi-person-plus"></i></button>
-                <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar rutina"><i class="bi bi-pencil-square"></i></button>
-                <button class="btn coach-icon-btn coach-icon-btn-danger" title="Eliminar rutina"><i class="bi bi-trash"></i></button>
-              </div>
-            </div>
-
-            <div class="routine-divider my-4"></div>
-
-            <h3 class="h5 mb-3">Usuarios asignados</h3>
-            <div class="assigned-user d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-3">
-              <div class="d-flex align-items-center gap-3">
-                <div class="assigned-avatar">JD</div>
-                <span class="h4 mb-0">Juan Diaz</span>
-              </div>
-              <button class="btn btn-dark-soft px-3">
-                <i class="bi bi-eye me-2"></i>
-                Ver progreso
-              </button>
-            </div>
-          </article>
-
-          <article class="coach-card p-4">
-            <div class="d-flex flex-column flex-xl-row justify-content-between gap-3">
-              <div>
-                <h2 class="h3 mb-3">Rutina para Principiantes</h2>
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                  <span class="coach-pill coach-pill-accent">Acondicionamiento</span>
-                  <span class="coach-pill coach-pill-muted">Principiante</span>
-                </div>
-                <div class="d-flex flex-wrap gap-4 coach-text-soft">
-                  <span><strong class="text-white">18</strong> ejercicios</span>
-                  <span>Creada el 19 ene 2026</span>
-                </div>
-              </div>
-
-              <div class="d-flex gap-2 align-items-start">
-                <button class="btn coach-icon-btn coach-icon-btn-success" title="Asignar usuarios"><i class="bi bi-person-plus"></i></button>
-                <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar rutina"><i class="bi bi-pencil-square"></i></button>
-                <button class="btn coach-icon-btn coach-icon-btn-danger" title="Eliminar rutina"><i class="bi bi-trash"></i></button>
-              </div>
-            </div>
-          </article>
-
-          <article class="coach-card p-4">
-            <div class="d-flex flex-column flex-xl-row justify-content-between gap-3">
-              <div>
-                <h2 class="h3 mb-3">Rutina Avanzada de Powerlifting</h2>
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                  <span class="coach-pill coach-pill-accent">Fuerza</span>
-                  <span class="coach-pill coach-pill-muted">Avanzado</span>
-                </div>
-                <div class="d-flex flex-wrap gap-4 coach-text-soft">
-                  <span><strong class="text-white">20</strong> ejercicios</span>
-                  <span>Creada el 31 ene 2026</span>
-                </div>
-              </div>
-
-              <div class="d-flex gap-2 align-items-start">
-                <button class="btn coach-icon-btn coach-icon-btn-success" title="Asignar usuarios"><i class="bi bi-person-plus"></i></button>
-                <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar rutina"><i class="bi bi-pencil-square"></i></button>
-                <button class="btn coach-icon-btn coach-icon-btn-danger" title="Eliminar rutina"><i class="bi bi-trash"></i></button>
-              </div>
-            </div>
-          </article>
+        <section class="d-flex flex-column gap-3" id="rutinasContainer">
+          <div class="text-center p-5 coach-card">
+            <span class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span>
+            <span class="ms-2 coach-text-soft">Cargando rutinas...</span>
+          </div>
         </section>
       </main>
     </div>

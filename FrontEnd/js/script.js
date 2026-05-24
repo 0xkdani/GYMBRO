@@ -32,6 +32,7 @@
     if (typeof window.initMiCoach === 'function') window.initMiCoach();
     if (typeof window.initGestionRutinaCoach === 'function') window.initGestionRutinaCoach();
     if (typeof window.initCrearRutinaCoach === 'function') window.initCrearRutinaCoach();
+    if (typeof window.initDashboardCoach === 'function') window.initDashboardCoach();
   }).catch(err => {
     console.error('Error al inicializar módulos de GYMBRO:', err);
   });

@@ -119,7 +119,7 @@
     });
 
     // 2. Cargar y gestionar listado de rutinas dinámicamente
-    const rutinasContainer = document.querySelector('main.col > section.gap-3');
+    const rutinasContainer = document.getElementById('rutinasContainer');
     if (!rutinasContainer) return;
 
     async function cargarRutinas() {
@@ -778,9 +778,53 @@
     }
   }
 
+  async function initDashboardCoach() {
+    const rutinasEl = document.getElementById('contadorRutinas');
+    const usuariosEl = document.getElementById('contadorUsuarios');
+    const ejerciciosEl = document.getElementById('contadorEjercicios');
+    if (!rutinasEl || !usuariosEl || !ejerciciosEl) return;
+
+    const API_BASE_URL = 'http://127.0.0.1:5000';
+    const currentUser = JSON.parse(localStorage.getItem('fittracker_user') || 'null');
+    const coachId = currentUser ? currentUser.id : '6a124a584aa0ab34922bfddb';
+
+    try {
+      const [rutinasRes, clientesRes, ejerciciosRes] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/rutinas`),
+        fetch(`${API_BASE_URL}/api/coach-cliente/coach/${coachId}`),
+        fetch(`${API_BASE_URL}/api/ejercicios`)
+      ]);
+
+      if (!rutinasRes.ok || !clientesRes.ok || !ejerciciosRes.ok) {
+        throw new Error('Error al consultar datos en el servidor');
+      }
+
+      const rutinas = await rutinasRes.json();
+      const clientes = await clientesRes.json();
+      const ejercicios = await ejerciciosRes.json();
+
+      // Filtrar las rutinas creadas por este coach en particular
+      const rutinasDelCoach = rutinas.filter(
+        r => String(r.coachId._id || r.coachId) === coachId
+      );
+
+      // Actualizar el DOM con las estadísticas reales
+      rutinasEl.textContent = rutinasDelCoach.length;
+      usuariosEl.textContent = clientes.length;
+      ejerciciosEl.textContent = ejercicios.length;
+
+    } catch (error) {
+      console.error('Error al cargar estadísticas del dashboard:', error);
+      rutinasEl.textContent = '0';
+      usuariosEl.textContent = '0';
+      ejerciciosEl.textContent = '0';
+    }
+  }
+
   // Cargar perfil en la barra lateral automáticamente
   cargarPerfilSidebar();
 
   window.initGestionRutinaCoach = initGestionRutinaCoach;
   window.initCrearRutinaCoach = initCrearRutinaCoach;
+  window.initDashboardCoach = initDashboardCoach;
 })();
