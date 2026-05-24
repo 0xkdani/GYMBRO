@@ -59,7 +59,18 @@
         <section class="coach-card p-4 mb-4">
           <div class="d-flex flex-column flex-xl-row justify-content-between gap-4 align-items-xl-start">
             <div class="d-flex gap-3 gap-md-4 align-items-start flex-wrap">
-              <div class="cliente-profile-avatar">JD</div>
+              <!-- Avatar con overlay de foto -->
+              <div id="profileAvatarWrapper" style="position:relative; display:inline-block; flex-shrink:0;">
+                <div class="cliente-profile-avatar" id="profileAvatarEl">JD</div>
+                <label for="inputFotoPerfil" id="profileAvatarOverlay" title="Cambiar foto"
+                  style="display:none; position:absolute; inset:0; border-radius:50%;
+                    background:rgba(0,0,0,0.55); cursor:pointer;
+                    align-items:center; justify-content:center; flex-direction:column; gap:2px;">
+                  <i class="bi bi-camera-fill" style="font-size:1.5rem; color:#fff;"></i>
+                  <span style="font-size:0.6rem; color:#ddd; font-weight:600; letter-spacing:.5px;">CAMBIAR</span>
+                </label>
+                <input type="file" id="inputFotoPerfil" accept="image/*" style="display:none;">
+              </div>
 
               <div>
                 <h2 class="h3 mb-1">Juan Diaz</h2>

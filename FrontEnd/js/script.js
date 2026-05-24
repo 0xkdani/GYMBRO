@@ -30,6 +30,7 @@
     if (typeof window.initProgresoCliente === 'function') window.initProgresoCliente();
     if (typeof window.initRutinaCliente === 'function') window.initRutinaCliente();
     if (typeof window.initLogout === 'function') window.initLogout();
+    if (typeof window.initSidebarAvatar === 'function') window.initSidebarAvatar();
     if (typeof window.initMiCoach === 'function') window.initMiCoach();
     if (typeof window.initGestionRutinaCoach === 'function') window.initGestionRutinaCoach();
     if (typeof window.initCrearRutinaCoach === 'function') window.initCrearRutinaCoach();

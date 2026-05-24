@@ -25,7 +25,8 @@ const userSchema = new mongoose.Schema({
         minlength: [4, 'La contraseña debe tener al menos 4 caracteres'],
         select: false
     },
-    bio: { type: String, default: '' }
+    bio: { type: String, default: '' },
+    fotoPerfil: { type: String, default: '' }
 });
 
 userSchema.pre('save', async function (next) {
@@ -79,21 +80,21 @@ router.post('/login', async (req, res) => {
 
     res.json({
         mensaje: 'Login exitoso',
-        Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol, bio: user.bio },
+        Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol, bio: user.bio, fotoPerfil: user.fotoPerfil },
         token
     });
 });
 
 // GET /api/coaches
 router.get('/coaches', async (req, res) => {
-    const coaches = await Usuario.find({ rol: 'coach' }).select('nombre apellido email rol bio');
+    const coaches = await Usuario.find({ rol: 'coach' }).select('nombre apellido email rol bio fotoPerfil');
     res.json(coaches);
 });
 
 // PUT /api/perfil/:id
 router.put('/perfil/:id', async (req, res) => {
     try {
-        const { nombre, apellido, email, bio } = req.body;
+        const { nombre, apellido, email, bio, fotoPerfil } = req.body;
         const userId = req.params.id;
 
         // Verificar que el usuario exista
@@ -115,12 +116,13 @@ router.put('/perfil/:id', async (req, res) => {
         user.apellido = apellido || user.apellido;
         user.email = email || user.email;
         if (bio !== undefined) user.bio = bio;
+        if (fotoPerfil !== undefined) user.fotoPerfil = fotoPerfil;
 
         await user.save();
 
         res.json({
             message: 'Perfil actualizado exitosamente',
-            Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol, bio: user.bio }
+            Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol, bio: user.bio, fotoPerfil: user.fotoPerfil }
         });
     } catch (error) {
         console.error(error);

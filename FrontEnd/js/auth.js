@@ -174,6 +174,18 @@
     let currentUser = JSON.parse(localStorage.getItem('fittracker_user') || 'null');
     if (!currentUser) return;
 
+    function setAvatarContent(el, user) {
+      if (!el) return;
+      const imgSrc = user.fotoPerfil || null;
+      if (imgSrc) {
+        el.innerHTML = `<img src="${imgSrc}" alt="Foto de perfil"
+          style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;">`;
+      } else {
+        const initials = (user.nombre.charAt(0) + (user.apellido ? user.apellido.charAt(0) : '')).toUpperCase();
+        el.textContent = initials;
+      }
+    }
+
     function renderUserData(user) {
       nombreInput.value = user.nombre || '';
       apellidoInput.value = user.apellido || '';
@@ -185,7 +197,6 @@
       }
 
       const fullName = `${user.nombre} ${user.apellido}`;
-      const initials = (user.nombre.charAt(0) + user.apellido.charAt(0)).toUpperCase();
       
       const headerNames = document.querySelectorAll('.h3.mb-1, .fw-semibold');
       headerNames.forEach(el => {
@@ -194,8 +205,13 @@
         }
       });
 
-      const avatars = document.querySelectorAll('.coach-user-avatar, .cliente-profile-avatar, .profile-avatar');
-      avatars.forEach(el => el.textContent = initials);
+      // Actualizar el avatar principal (#profileAvatarEl) con foto o iniciales
+      const mainAvatarEl = document.getElementById('profileAvatarEl');
+      setAvatarContent(mainAvatarEl, user);
+
+      // Actualizar el sidebar también con la foto
+      const sidebarAvatars = document.querySelectorAll('.coach-user-avatar');
+      sidebarAvatars.forEach(el => setAvatarContent(el, user));
 
       const headerEmails = document.querySelectorAll('.bi-envelope');
       headerEmails.forEach(el => {
@@ -241,15 +257,51 @@
       setTimeout(() => { feedbackEl.style.display = 'none'; }, 4000);
     }
 
+    // --- OVERLAY DE CÁMARA ---
+    const inputFoto = document.getElementById('inputFotoPerfil');
+    const avatarOverlay = document.getElementById('profileAvatarOverlay');
+    let pendingFotoBase64 = null; // Base64 pendiente de guardar
+
     btnEdit.addEventListener('click', () => {
       nombreInput.removeAttribute('readonly');
       apellidoInput.removeAttribute('readonly');
       correoInput.removeAttribute('readonly');
       if (bioInput) bioInput.removeAttribute('readonly');
+
+      // Mostrar overlay de cámara al entrar en modo edición
+      if (avatarOverlay) avatarOverlay.style.display = 'flex';
       
       btnEdit.classList.add('d-none');
       btnSave.classList.remove('d-none');
     });
+
+    // Preview inmediato al seleccionar imagen
+    if (inputFoto) {
+      inputFoto.addEventListener('change', () => {
+        const file = inputFoto.files[0];
+        if (!file) return;
+
+        const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+        if (file.size > MAX_SIZE) {
+          setFeedback('La imagen no puede superar 2MB. Elige una imagen más pequeña.', 'error');
+          inputFoto.value = '';
+          pendingFotoBase64 = null;
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          pendingFotoBase64 = e.target.result;
+          const avatarEl = document.getElementById('profileAvatarEl');
+          if (avatarEl) {
+            avatarEl.innerHTML = `<img src="${pendingFotoBase64}" alt="Foto de perfil"
+              style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;">`;
+          }
+          setFeedback('Imagen lista. Haz clic en "Guardar Cambios" para aplicarla.', 'success');
+        };
+        reader.readAsDataURL(file);
+      });
+    }
 
     btnSave.addEventListener('click', async () => {
       const nombre = nombreInput.value.trim();
@@ -267,6 +319,8 @@
       try {
         const bodyData = { nombre, apellido, email };
         if (bioInput) bodyData.bio = bioInput.value.trim();
+        // Incluir la foto solo si el usuario eligió una nueva
+        if (pendingFotoBase64 !== null) bodyData.fotoPerfil = pendingFotoBase64;
 
         const response = await fetch(`${API_BASE_URL}/api/perfil/${currentUser.id}`, {
           method: 'PUT',
@@ -282,12 +336,17 @@
 
         currentUser = data.Usuario;
         localStorage.setItem('fittracker_user', JSON.stringify(currentUser));
-        
+
+        pendingFotoBase64 = null; // limpiar el pendiente
         renderUserData(currentUser);
         nombreInput.setAttribute('readonly', 'true');
         apellidoInput.setAttribute('readonly', 'true');
         correoInput.setAttribute('readonly', 'true');
         if (bioInput) bioInput.setAttribute('readonly', 'true');
+
+        // Ocultar overlay de cámara al salir del modo edición
+        if (avatarOverlay) avatarOverlay.style.display = 'none';
+        if (inputFoto) inputFoto.value = '';
 
         btnSave.classList.add('d-none');
         btnEdit.classList.remove('d-none');
@@ -381,6 +440,27 @@
     });
   }
 
+  function initSidebarAvatar() {
+    const currentUser = JSON.parse(localStorage.getItem('fittracker_user') || 'null');
+    if (!currentUser) return;
+
+    const sidebarAvatars = document.querySelectorAll('.coach-user-avatar');
+    if (!sidebarAvatars.length) return;
+
+    sidebarAvatars.forEach(el => {
+      if (currentUser.fotoPerfil) {
+        // Asegurarse de que el contenedor sea redondo y corte la imagen correctamente
+        el.style.overflow = 'hidden';
+        el.style.padding = '0';
+        el.innerHTML = `<img src="${currentUser.fotoPerfil}" alt="Foto de perfil"
+          style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;">`;
+      } else {
+        const initials = (currentUser.nombre.charAt(0) + (currentUser.apellido ? currentUser.apellido.charAt(0) : '')).toUpperCase();
+        el.textContent = initials;
+      }
+    });
+  }
+
   function initLogout() {
     const btnLogout = document.getElementById('btnLogout');
     if (!btnLogout) return;
@@ -397,4 +477,5 @@
   window.initProfilePage = initProfilePage;
   window.initPasswordChange = initPasswordChange;
   window.initLogout = initLogout;
+  window.initSidebarAvatar = initSidebarAvatar;
 })();
