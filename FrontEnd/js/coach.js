@@ -215,8 +215,14 @@
         });
 
         if (!response.ok) {
-          const data = await response.json();
-          alert(data.message || 'Error al eliminar la rutina');
+          let errMsg = 'Error al eliminar la rutina. (¿Reiniciaste el backend?)';
+          try {
+            const data = await response.json();
+            errMsg = data.message || errMsg;
+          } catch (e) {
+            console.error("Respuesta no es JSON:", e);
+          }
+          alert(errMsg);
           return;
         }
 
