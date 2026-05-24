@@ -275,6 +275,39 @@
     </div>
   </div>
 
+  <!-- Modal Ver Progreso de Cliente -->
+  <div class="modal fade" id="modalVerProgreso" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="background:#0f1528; border:1px solid var(--coach-border-soft); border-radius:20px; color:#fff;">
+        <div class="modal-header border-0">
+          <h3 class="modal-title h4 mb-0" id="modalProgresoTitulo">Progreso del Cliente</h3>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="text-white-50 small mb-3">Historial de peso corporal y observaciones registradas por el usuario:</p>
+          
+          <div class="table-responsive shadow-sm rounded" style="max-height: 350px; overflow-y: auto; border: 1px solid var(--coach-border-soft);">
+            <table class="table text-white table-hover mb-0" style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255,255,255,0.03); --bs-table-border-color: var(--coach-border-soft); vertical-align: middle;">
+              <thead>
+                <tr style="background: rgba(255,255,255,0.02);">
+                  <th class="text-white fw-semibold border-bottom px-3 py-3" style="width: 25%;">Fecha</th>
+                  <th class="text-white fw-semibold border-bottom px-3 py-3" style="width: 20%;">Peso (kg)</th>
+                  <th class="text-white fw-semibold border-bottom px-3 py-3" style="width: 55%;">Observaciones</th>
+                </tr>
+              </thead>
+              <tbody id="progresoClienteTableBody">
+                <!-- Carga dinámica de progresos -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-dark-soft px-4" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../js/script.js"></script>
 </body>

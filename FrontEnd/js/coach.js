@@ -286,16 +286,106 @@
 
       // 3c. Manejar eliminación de rutinas
       const deleteBtn = event.target.closest('button.coach-icon-btn-danger');
-      if (!deleteBtn) return;
+      if (deleteBtn) {
+        const rutinaId = deleteBtn.getAttribute('data-id');
+        if (rutinaId) {
+          rutinaIdParaEliminar = rutinaId;
+          if (modalConfirmar) {
+            modalConfirmar.show();
+          }
+        }
+        return;
+      }
 
-      const rutinaId = deleteBtn.getAttribute('data-id');
-      if (!rutinaId) return;
-
-      rutinaIdParaEliminar = rutinaId;
-      if (modalConfirmar) {
-        modalConfirmar.show();
+      // 3d. Manejar visualización del progreso del cliente
+      const progBtn = event.target.closest('button.btn-ver-progreso');
+      if (progBtn) {
+        const clienteId = progBtn.getAttribute('data-cliente-id');
+        const cardEl = progBtn.closest('.assigned-user');
+        const nameEl = cardEl ? (cardEl.querySelector('.h4') || cardEl.querySelector('span')) : null;
+        const clienteNombre = nameEl ? nameEl.textContent.trim() : 'Cliente';
+        if (clienteId) {
+          abrirModalProgreso(clienteId, clienteNombre);
+        }
+        return;
       }
     });
+
+    // --- LÓGICA DE VISUALIZACIÓN DEL PROGRESO DEL CLIENTE ---
+    async function abrirModalProgreso(clienteId, clienteNombre) {
+      const modalProgresoEl = document.getElementById('modalVerProgreso');
+      if (!modalProgresoEl || typeof bootstrap === 'undefined') return;
+
+      const modalProgreso = bootstrap.Modal.getOrCreateInstance(modalProgresoEl);
+      const tableBodyProgreso = document.getElementById('progresoClienteTableBody');
+      const tituloProgreso = document.getElementById('modalProgresoTitulo');
+
+      if (!tableBodyProgreso) return;
+
+      if (tituloProgreso) {
+        tituloProgreso.textContent = `Progreso de ${clienteNombre}`;
+      }
+
+      tableBodyProgreso.innerHTML = `
+        <tr>
+          <td colspan="3" class="text-center py-4 border-bottom-0">
+            <span class="spinner-border spinner-border-sm text-success" role="status" aria-hidden="true"></span>
+            <span class="ms-2 text-white-50">Obteniendo historial de progreso...</span>
+          </td>
+        </tr>
+      `;
+
+      modalProgreso.show();
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/progresos/${clienteId}`);
+        if (!response.ok) throw new Error('Error al cargar progresos');
+        const progresos = await response.json();
+
+        if (progresos.length === 0) {
+          tableBodyProgreso.innerHTML = `
+            <tr>
+              <td colspan="3" class="text-center py-5 border-bottom-0">
+                <i class="bi bi-graph-down text-white-50 mb-2 d-block" style="font-size: 2.2rem; opacity: 0.7;"></i>
+                <p class="small text-white-50 mb-0" style="font-size: 0.95rem; font-weight: 500;">El cliente aún no ha registrado progresos físicos.</p>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        // Ordenar progresos de más reciente a más antiguo
+        progresos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+        tableBodyProgreso.innerHTML = progresos.map(prog => {
+          const fechaStr = new Date(prog.fecha).toLocaleDateString('es-ES', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          });
+          const notasStr = prog.notes || prog.notas ? (prog.notes || prog.notas).trim() : '<span class="text-white-50 small" style="opacity: 0.6;">Sin observaciones</span>';
+          return `
+            <tr>
+              <td class="px-3 py-3 border-bottom text-white fw-medium">${fechaStr}</td>
+              <td class="px-3 py-3 border-bottom"><span class="badge" style="background: rgba(33, 217, 123, 0.15); color: var(--coach-accent); font-size: 0.95rem; font-weight: 600; padding: 0.4em 0.8em; border-radius: 8px;">${prog.peso} kg</span></td>
+              <td class="px-3 py-3 border-bottom text-white-50" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${prog.notes || prog.notas || ''}">${notasStr}</td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (error) {
+        console.error(error);
+        tableBodyProgreso.innerHTML = `
+          <tr>
+            <td colspan="3" class="text-center py-4 border-bottom-0">
+              <div class="alert alert-danger small mb-0 d-inline-block py-2" role="alert">
+                No se pudo conectar con el servidor para cargar el progreso.
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+    }
 
     // --- LÓGICA DE ASIGNACIÓN DE RUTINAS A CLIENTES VINCULADOS ---
     const modalAsignarEl = document.getElementById('modalAsignarRutina');
