@@ -21,42 +21,73 @@
 
     const API_BASE_URL = 'http://127.0.0.1:5000';
 
+    function buildVideoHtml(videoUrl) {
+      if (videoUrl) {
+        return `<p class="catalog-video-ok mb-0"><i class="bi bi-camera-video me-2"></i>Video disponible</p>`;
+      }
+      return `<p class="catalog-video-miss mb-0"><i class="bi bi-camera-video-off me-2"></i>Sin video disponible</p>`;
+    }
+
+    function createCardFromDB(ejercicio) {
+      const col = document.createElement('div');
+      col.className = 'col-12 col-md-6 col-xl-4 catalog-item';
+      col.dataset.id = ejercicio._id;
+      col.innerHTML = `
+        <article class="catalog-card p-4 h-100">
+          <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+            <h3 class="h4 mb-0">${ejercicio.nombreEjercicio}</h3>
+            <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar ejercicio" data-edit-exercise><i class="bi bi-pencil-square"></i></button>
+          </div>
+          <p class="coach-text-soft mb-2">Grupo muscular: <strong class="text-white">${ejercicio.grupoMuscular}</strong></p>
+          ${buildVideoHtml(ejercicio.videoUrl)}
+        </article>
+      `;
+      return col;
+    }
+
+    // Carga el catálogo desde la API
+    async function cargarCatalogo() {
+      const spinner = document.getElementById('catalogoSpinner');
+      // Limpiar tarjetas anteriores pero mantener el spinner
+      Array.from(cardsContainer.querySelectorAll('.catalog-item')).forEach(el => el.remove());
+      if (spinner) spinner.style.display = 'flex';
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/ejercicios`);
+        if (!res.ok) throw new Error('Error al cargar ejercicios');
+        const ejercicios = await res.json();
+
+        if (spinner) spinner.style.display = 'none';
+
+        if (ejercicios.length === 0) {
+          cardsContainer.innerHTML = `
+            <div class="col-12 text-center py-5">
+              <i class="bi bi-clipboard-x display-4 text-muted d-block mb-3"></i>
+              <p class="coach-text-soft">No hay ejercicios en el catálogo aún.</p>
+            </div>
+          `;
+          return;
+        }
+
+        ejercicios.forEach(ej => cardsContainer.appendChild(createCardFromDB(ej)));
+      } catch (err) {
+        console.error(err);
+        if (spinner) spinner.style.display = 'none';
+        cardsContainer.innerHTML += `<div class="col-12"><div class="alert alert-danger small">No se pudieron cargar los ejercicios.</div></div>`;
+      }
+    }
+
+    // Cargar cuando se abre el modal del catálogo
+    catalogoModalEl.addEventListener('show.bs.modal', () => {
+      cargarCatalogo();
+    });
+
     function readCardData(cardEl) {
       const name = cardEl.querySelector('h3').textContent.trim();
       const group = cardEl.querySelector('strong').textContent.trim();
       const hasVideo = cardEl.querySelector('.catalog-video-ok') ? 'si' : 'no';
-      return { name, group, hasVideo };
-    }
-
-    function fillCard(cardColEl, data) {
-      const card = cardColEl.querySelector('.catalog-card');
-      card.querySelector('h3').textContent = data.name;
-      card.querySelector('strong').textContent = data.group;
-      const videoLine = card.querySelector('.catalog-video-ok, .catalog-video-miss');
-      if (data.hasVideo === 'si') {
-        videoLine.className = 'catalog-video-ok mb-0';
-        videoLine.innerHTML = '<i class="bi bi-camera-video me-2"></i>Video disponible';
-      } else {
-        videoLine.className = 'catalog-video-miss mb-0';
-        videoLine.innerHTML = '<i class="bi bi-camera-video-off me-2"></i>Sin video';
-      }
-    }
-
-    function createCard(data) {
-      const col = document.createElement('div');
-      col.className = 'col-12 col-md-6 col-xl-4 catalog-item';
-      col.innerHTML = `
-        <article class="catalog-card p-4 h-100">
-          <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
-            <h3 class="h4 mb-0"></h3>
-            <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar ejercicio" data-edit-exercise><i class="bi bi-pencil-square"></i></button>
-          </div>
-          <p class="coach-text-soft mb-2">Grupo muscular: <strong class="text-white"></strong></p>
-          <p class="mb-0"></p>
-        </article>
-      `;
-      fillCard(col, data);
-      return col;
+      const id = cardEl.closest('.catalog-item')?.dataset?.id || '';
+      return { name, group, hasVideo, id };
     }
 
     function openFormModal() {
@@ -95,27 +126,50 @@
       openFormModal();
     });
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const uploadedFile = videoFileInput.files[0];
-      const hasVideo = uploadedFile ? 'si' : currentHasVideoInput.value;
-      const data = {
-        name: nameInput.value.trim(),
-        group: groupInput.value,
-        hasVideo
-      };
-      if (!data.name || !data.group) return;
+      const nombre = nameInput.value.trim();
+      const grupo = groupInput.value;
+      if (!nombre || !grupo) return;
 
-      const editIndex = Number(editIndexInput.value);
-      const cards = Array.from(cardsContainer.querySelectorAll('.catalog-item'));
-      if (editIndex >= 0 && cards[editIndex]) {
-        fillCard(cards[editIndex], data);
-      } else {
-        cardsContainer.appendChild(createCard(data));
+      const cardCol = editIndexInput.value !== '-1'
+        ? Array.from(cardsContainer.querySelectorAll('.catalog-item'))[Number(editIndexInput.value)]
+        : null;
+      const existingId = cardCol?.dataset?.id || '';
+
+      // Si el usuario sube un archivo nuevo, usamos el nombre del archivo como indicador de video
+      // (el archivo real no se sube al servidor en este proyecto; se marca 'disponible' si el campo tiene algo)
+      let videoUrl = currentHasVideoInput.value === 'si' ? 'local_video' : '';
+      if (uploadedFile) videoUrl = uploadedFile.name; // marca que tiene video
+
+      try {
+        if (existingId) {
+          // Actualizar ejercicio existente en la base de datos
+          const res = await fetch(`${API_BASE_URL}/api/ejercicios/${existingId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombreEjercicio: nombre, grupoMuscular: grupo, videoUrl })
+          });
+          if (!res.ok) throw new Error('Error al actualizar ejercicio');
+        } else {
+          // Crear nuevo en la base de datos
+          const res = await fetch(`${API_BASE_URL}/api/ejercicios`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombreEjercicio: nombre, grupoMuscular: grupo, videoUrl })
+          });
+          if (!res.ok) throw new Error('Error al guardar ejercicio');
+        }
+
+        formModal.hide();
+        // Recargar el catálogo desde la API para reflejar los cambios reales
+        catalogoModalEl.addEventListener('shown.bs.modal', cargarCatalogo, { once: true });
+        catalogoModal.show();
+
+      } catch (err) {
+        console.error(err);
       }
-
-      formModal.hide();
-      catalogoModal.show();
     });
 
     // 2. Cargar y gestionar listado de rutinas dinámicamente
