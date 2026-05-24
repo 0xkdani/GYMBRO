@@ -56,4 +56,15 @@ router.get('/', async (req, res) => {
     res.json(asignaciones);
 });
 
+// DELETE /api/asignacion-rutinas
+router.delete('/', async (req, res) => {
+    try {
+        const { clienteId, rutinaId } = req.body;
+        await AsignacionRutina.deleteMany({ clienteId, rutinaId });
+        res.json({ message: 'Asignacion eliminada exitosamente' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error interno', error: err });
+    }
+});
+
 module.exports = router;

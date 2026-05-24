@@ -57,6 +57,17 @@ router.get('/cliente/:clienteId', async (req, res) => {
     }
 });
 
+// GET /api/coach-cliente/coach/:coachId
+router.get('/coach/:coachId', async (req, res) => {
+    try {
+        const relaciones = await CoachCliente.find({ coachId: req.params.coachId })
+            .populate('clienteId', 'nombre apellido email');
+        res.json(relaciones);
+    } catch (err) {
+        res.status(500).json({ message: 'Error interno', error: err });
+    }
+});
+
 // DELETE /api/coach-cliente
 router.delete('/', async (req, res) => {
     try {

@@ -124,9 +124,13 @@
 
     async function cargarRutinas() {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/rutinas`);
-        if (!response.ok) throw new Error('Error al obtener rutinas');
-        const rutinas = await response.json();
+        const [rutinasRes, asignacionesRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/rutinas`),
+          fetch(`${API_BASE_URL}/api/asignacion-rutinas`)
+        ]);
+        if (!rutinasRes.ok || !asignacionesRes.ok) throw new Error('Error al obtener rutinas');
+        const rutinas = await rutinasRes.json();
+        const asignaciones = await asignacionesRes.json();
 
         rutinasContainer.innerHTML = '';
 
@@ -151,6 +155,36 @@
             year: 'numeric'
           });
 
+          // Obtener los usuarios asignados a esta rutina en particular que estén activos
+          const usuariosAsignados = asignaciones.filter(asig => asig.rutinaId && asig.rutinaId._id === rutina._id && asig.estado === 'activa');
+
+          let asignadosHTML = '';
+          if (usuariosAsignados.length > 0) {
+            asignadosHTML = `
+              <div class="routine-divider my-4"></div>
+              <h3 class="h5 mb-3">Usuarios asignados</h3>
+              <div class="d-flex flex-column gap-2">
+                ${usuariosAsignados.map(asig => {
+                  const cli = asig.clienteId;
+                  if (!cli) return '';
+                  const initials = (cli.nombre.charAt(0) + (cli.apellido ? cli.apellido.charAt(0) : '')).toUpperCase();
+                  return `
+                    <div class="assigned-user d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-3">
+                      <div class="d-flex align-items-center gap-3">
+                        <div class="assigned-avatar">${initials}</div>
+                        <span class="h4 mb-0 text-white">${cli.nombre} ${cli.apellido || ''}</span>
+                      </div>
+                      <button class="btn btn-dark-soft px-3 btn-ver-progreso" data-cliente-id="${cli._id}">
+                        <i class="bi bi-eye me-2"></i>
+                        Ver progreso
+                      </button>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `;
+          }
+
           card.innerHTML = `
             <div class="d-flex flex-column flex-xl-row justify-content-between gap-3">
               <div>
@@ -166,11 +200,12 @@
               </div>
 
               <div class="d-flex gap-2 align-items-start">
-                <button class="btn coach-icon-btn coach-icon-btn-success" title="Asignar usuarios"><i class="bi bi-person-plus"></i></button>
+                <button class="btn coach-icon-btn coach-icon-btn-success" title="Asignar usuarios" data-id="${rutina._id}" data-action="asignar"><i class="bi bi-person-plus"></i></button>
                 <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar rutina" data-id="${rutina._id}"><i class="bi bi-pencil-square"></i></button>
                 <button class="btn coach-icon-btn coach-icon-btn-danger" title="Eliminar rutina" data-id="${rutina._id}"><i class="bi bi-trash"></i></button>
               </div>
             </div>
+            ${asignadosHTML}
           `;
           rutinasContainer.appendChild(card);
         });
@@ -187,6 +222,47 @@
     cargarRutinas();
 
     // 3. Manejar eliminación y edición de rutinas
+    let rutinaIdParaEliminar = null;
+    const modalConfirmarEl = document.getElementById('modalConfirmarEliminar');
+    const modalConfirmar = modalConfirmarEl ? bootstrap.Modal.getOrCreateInstance(modalConfirmarEl) : null;
+    const btnConfirmarEliminar = document.getElementById('btn-confirmar-eliminar');
+
+    if (btnConfirmarEliminar) {
+      btnConfirmarEliminar.addEventListener('click', async () => {
+        if (!rutinaIdParaEliminar) return;
+
+        btnConfirmarEliminar.disabled = true;
+        btnConfirmarEliminar.textContent = 'Eliminando...';
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/rutinas/${rutinaIdParaEliminar}`, {
+            method: 'DELETE'
+          });
+
+          if (!response.ok) {
+            let errMsg = 'Error al eliminar la rutina. (¿Reiniciaste el backend?)';
+            try {
+              const data = await response.json();
+              errMsg = data.message || errMsg;
+            } catch (e) {
+              console.error("Respuesta no es JSON:", e);
+            }
+            alert(errMsg);
+            return;
+          }
+
+          if (modalConfirmar) modalConfirmar.hide();
+          cargarRutinas();
+
+        } catch (error) {
+          alert('No se pudo conectar con el servidor.');
+        } finally {
+          btnConfirmarEliminar.disabled = false;
+          btnConfirmarEliminar.textContent = 'Eliminar';
+        }
+      });
+    }
+
     rutinasContainer.addEventListener('click', async (event) => {
       // 3a. Manejar edición de rutinas
       const editBtn = event.target.closest('button.coach-icon-btn-muted[title="Editar rutina"]');
@@ -198,41 +274,177 @@
         return;
       }
 
-      // 3b. Manejar eliminación de rutinas
+      // 3b. Manejar asignación de rutinas
+      const assignBtn = event.target.closest('button.coach-icon-btn-success[title="Asignar usuarios"]');
+      if (assignBtn) {
+        const rutinaId = assignBtn.getAttribute('data-id');
+        if (rutinaId) {
+          abrirModalAsignacion(rutinaId);
+        }
+        return;
+      }
+
+      // 3c. Manejar eliminación de rutinas
       const deleteBtn = event.target.closest('button.coach-icon-btn-danger');
       if (!deleteBtn) return;
 
       const rutinaId = deleteBtn.getAttribute('data-id');
       if (!rutinaId) return;
 
-      if (!confirm('¿Estás seguro de que deseas eliminar esta rutina? Esta acción no se puede deshacer.')) {
-        return;
+      rutinaIdParaEliminar = rutinaId;
+      if (modalConfirmar) {
+        modalConfirmar.show();
       }
+    });
+
+    // --- LÓGICA DE ASIGNACIÓN DE RUTINAS A CLIENTES VINCULADOS ---
+    const modalAsignarEl = document.getElementById('modalAsignarRutina');
+    const modalAsignar = modalAsignarEl ? bootstrap.Modal.getOrCreateInstance(modalAsignarEl) : null;
+    const btnGuardarAsignacion = document.getElementById('btn-guardar-asignacion');
+    const listClientesContainer = document.getElementById('asignarClientesList');
+    const inputAsignarRutinaId = document.getElementById('asignarRutinaId');
+    const feedbackAsignar = document.getElementById('asignarFeedback');
+
+    async function abrirModalAsignacion(rutinaId) {
+      if (!modalAsignar || !listClientesContainer) return;
+      
+      inputAsignarRutinaId.value = rutinaId;
+      if (feedbackAsignar) feedbackAsignar.style.display = 'none';
+      
+      listClientesContainer.innerHTML = `
+        <div class="text-center py-4">
+          <span class="spinner-border spinner-border-sm text-success"></span>
+          <span class="ms-2 small coach-text-soft">Obteniendo tus clientes vinculados...</span>
+        </div>
+      `;
+      modalAsignar.show();
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/rutinas/${rutinaId}`, {
-          method: 'DELETE'
-        });
+        const currentUser = JSON.parse(localStorage.getItem('fittracker_user') || 'null');
+        const coachId = currentUser ? currentUser.id : '6a124a584aa0ab34922bfddb';
 
-        if (!response.ok) {
-          let errMsg = 'Error al eliminar la rutina. (¿Reiniciaste el backend?)';
-          try {
-            const data = await response.json();
-            errMsg = data.message || errMsg;
-          } catch (e) {
-            console.error("Respuesta no es JSON:", e);
-          }
-          alert(errMsg);
+        // Hacer fetch en paralelo de tus clientes vinculados y todas las asignaciones de rutina existentes
+        const [relacionesRes, asignacionesRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/coach-cliente/coach/${coachId}`),
+          fetch(`${API_BASE_URL}/api/asignacion-rutinas`)
+        ]);
+
+        if (!relacionesRes.ok || !asignacionesRes.ok) throw new Error('Error al cargar datos del servidor');
+
+        const relaciones = await relacionesRes.json();
+        const asignaciones = await asignacionesRes.json();
+
+        // Mapear los clientes que ya están asignados ACTIVAMENTE a esta rutina en particular
+        const asignadosAEstaRutina = new Set(
+          asignaciones
+            .filter(asig => asig.rutinaId && asig.rutinaId._id === rutinaId && asig.estado === 'activa')
+            .map(asig => asig.clienteId && asig.clienteId._id)
+        );
+
+        if (relaciones.length === 0) {
+          listClientesContainer.innerHTML = `
+            <div class="text-center py-4 px-3 rounded" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.1);">
+              <i class="bi bi-people text-muted mb-2 d-block" style="font-size: 2rem;"></i>
+              <p class="small text-muted mb-0">Aún no tienes ningún cliente que te haya seleccionado como su coach.</p>
+            </div>
+          `;
           return;
         }
 
-        alert('¡Rutina eliminada exitosamente!');
-        cargarRutinas();
+        listClientesContainer.innerHTML = relaciones.map(rel => {
+          const cli = rel.clienteId;
+          if (!cli) return '';
+          const isChecked = asignadosAEstaRutina.has(cli._id) ? 'checked' : '';
+          return `
+            <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.2s;">
+              <div class="d-flex align-items-center gap-3">
+                <div class="avatar-mini rounded-circle d-flex align-items-center justify-content-center text-success fw-bold" style="width: 40px; height: 40px; background: rgba(33, 217, 123, 0.1);">
+                  ${(cli.nombre.charAt(0) + (cli.apellido ? cli.apellido.charAt(0) : '')).toUpperCase()}
+                </div>
+                <div>
+                  <div class="fw-semibold text-white" style="font-size: 0.95rem;">${cli.nombre} ${cli.apellido || ''}</div>
+                  <small class="coach-text-soft" style="font-size: 0.8rem;">${cli.email}</small>
+                </div>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input client-assign-switch" type="checkbox" data-client-id="${cli._id}" ${isChecked} style="cursor: pointer; width: 2.5em; height: 1.25em;">
+              </div>
+            </div>
+          `;
+        }).join('');
 
       } catch (error) {
-        alert('No se pudo conectar con el servidor.');
+        console.error(error);
+        listClientesContainer.innerHTML = `
+          <div class="alert alert-danger small py-3" role="alert">
+            No se pudieron cargar los clientes de forma correcta.
+          </div>
+        `;
       }
-    });
+    }
+
+    if (btnGuardarAsignacion) {
+      btnGuardarAsignacion.addEventListener('click', async () => {
+        const rutinaId = inputAsignarRutinaId.value;
+        if (!rutinaId) return;
+
+        btnGuardarAsignacion.disabled = true;
+        btnGuardarAsignacion.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+
+        const switches = Array.from(listClientesContainer.querySelectorAll('.client-assign-switch'));
+        const currentUser = JSON.parse(localStorage.getItem('fittracker_user') || 'null');
+        const coachId = currentUser ? currentUser.id : '6a124a584aa0ab34922bfddb';
+
+        try {
+          await Promise.all(switches.map(async (sw) => {
+            const clienteId = sw.getAttribute('data-client-id');
+            const checked = sw.checked;
+
+            if (checked) {
+              // Eliminar cualquier asignación previa para evitar duplicados
+              await fetch(`${API_BASE_URL}/api/asignacion-rutinas`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ clienteId, rutinaId })
+              });
+
+              // Crear la nueva asignación activa
+              await fetch(`${API_BASE_URL}/api/asignacion-rutinas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  clienteId,
+                  coachId,
+                  rutinaId,
+                  estado: 'activa'
+                })
+              });
+            } else {
+              // Eliminar la asignación desmarcada
+              await fetch(`${API_BASE_URL}/api/asignacion-rutinas`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ clienteId, rutinaId })
+              });
+            }
+          }));
+
+          if (modalAsignar) modalAsignar.hide();
+          cargarRutinas();
+
+        } catch (error) {
+          console.error(error);
+          if (feedbackAsignar) {
+            feedbackAsignar.className = 'alert alert-danger small mb-0 mt-2';
+            feedbackAsignar.textContent = 'Ocurrió un error al procesar las asignaciones.';
+            feedbackAsignar.style.display = 'block';
+          }
+        } finally {
+          btnGuardarAsignacion.disabled = false;
+          btnGuardarAsignacion.innerHTML = '<i class="bi bi-person-check me-2"></i>Asignar';
+        }
+      });
+    }
   }
 
   function initCrearRutinaCoach() {
@@ -256,6 +468,44 @@
 
     const API_BASE_URL = 'http://127.0.0.1:5000';
     let editingRow = null;
+
+    function mostrarAlerta(titulo, mensaje, esExito = true, callback = null) {
+      const modalEl = document.getElementById('modalAlertaCrear');
+      if (!modalEl) {
+        alert(mensaje);
+        if (callback) callback();
+        return;
+      }
+
+      document.getElementById('modalAlertaTitulo').textContent = titulo;
+      document.getElementById('modalAlertaMensaje').textContent = mensaje;
+
+      const iconWrap = modalEl.querySelector('.modal-body i');
+      const iconContainer = iconWrap ? iconWrap.parentElement : null;
+      if (iconContainer && iconWrap) {
+        if (esExito) {
+          iconContainer.style.background = 'rgba(33, 217, 123, 0.15)';
+          iconContainer.style.color = 'var(--coach-accent)';
+          iconWrap.className = 'bi bi-check-circle-fill';
+        } else {
+          iconContainer.style.background = 'rgba(245, 69, 69, 0.15)';
+          iconContainer.style.color = '#f54545';
+          iconWrap.className = 'bi bi-exclamation-triangle-fill';
+        }
+      }
+
+      const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modalInstance.show();
+
+      const btnEntendido = document.getElementById('btn-alerta-entendido');
+      const newBtn = btnEntendido.cloneNode(true);
+      btnEntendido.parentNode.replaceChild(newBtn, btnEntendido);
+
+      newBtn.addEventListener('click', () => {
+        modalInstance.hide();
+        if (callback) callback();
+      });
+    }
 
     // Detectar si estamos en modo edición (si hay un ID en la URL)
     const urlParams = new URLSearchParams(window.location.search);
@@ -325,8 +575,9 @@
         });
 
       } catch (error) {
-        alert('No se pudo cargar la rutina para editar.');
-        window.location.href = 'GestionRutina-coach.html';
+        mostrarAlerta('Error', 'No se pudo cargar la rutina para editar.', false, () => {
+          window.location.href = 'GestionRutina-coach.html';
+        });
       }
     }
 
@@ -374,7 +625,7 @@
     btnAgregar.addEventListener('click', () => {
       const data = readExerciseInputs();
       if (!validateExercise(data)) {
-        alert('Completa Ejercicio, Series y Repeticiones para agregar.');
+        mostrarAlerta('Datos Incompletos', 'Completa Ejercicio, Series y Repeticiones para agregar.', false);
         return;
       }
 
@@ -428,13 +679,13 @@
       const notas = rutinaNotas ? rutinaNotas.value.trim() : '';
 
       if (!nombre || !objetivo || !nivel) {
-        alert('Completa Nombre, Objetivo y Nivel antes de guardar la rutina.');
+        mostrarAlerta('Datos Incompletos', 'Completa Nombre, Objetivo y Nivel antes de guardar la rutina.', false);
         return;
       }
 
       const rows = Array.from(tablaBody.querySelectorAll('tr'));
       if (rows.length === 0) {
-        alert('Agrega al menos un ejercicio antes de guardar la rutina.');
+        mostrarAlerta('Rutina Vacía', 'Agrega al menos un ejercicio antes de guardar la rutina.', false);
         return;
       }
 
@@ -478,15 +729,26 @@
         const data = await response.json();
         if (!response.ok) {
           const errMsg = data.errores ? data.errores.join('\n') : (data.message || 'Error al guardar la rutina');
-          alert(errMsg);
+          mostrarAlerta('Error al Guardar', errMsg, false);
           return;
         }
 
-        alert(rutinaId ? '¡Rutina actualizada exitosamente!' : '¡Rutina creada exitosamente!');
-        window.location.href = 'GestionRutina-coach.html';
+        const msgExito = rutinaId ? '¡Rutina actualizada exitosamente!' : '¡Rutina creada exitosamente!';
+        mostrarAlerta('¡Rutina Guardada!', msgExito, true, () => {
+          window.location.href = 'GestionRutina-coach.html';
+        });
+
+        // Redirección de cortesía tras 2.2 segundos si no hace clic en Entendido
+        setTimeout(() => {
+          const modalEl = document.getElementById('modalAlertaCrear');
+          if (modalEl && modalEl.classList.contains('show')) {
+            bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+            window.location.href = 'GestionRutina-coach.html';
+          }
+        }, 2200);
 
       } catch (error) {
-        alert('No se pudo conectar con el servidor.');
+        mostrarAlerta('Error de Conexión', 'No se pudo conectar con el servidor.', false);
       } finally {
         btnGuardar.disabled = false;
         btnGuardar.innerHTML = '<i class="bi bi-floppy me-2"></i>Guardar Rutina';
