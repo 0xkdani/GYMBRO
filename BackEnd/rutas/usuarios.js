@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: [4, 'La contraseña debe tener al menos 4 caracteres'],
         select: false
-    }
+    },
+    bio: { type: String, default: '' }
 });
 
 userSchema.pre('save', async function (next) {
@@ -78,21 +79,21 @@ router.post('/login', async (req, res) => {
 
     res.json({
         mensaje: 'Login exitoso',
-        Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol },
+        Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol, bio: user.bio },
         token
     });
 });
 
 // GET /api/coaches
 router.get('/coaches', async (req, res) => {
-    const coaches = await Usuario.find({ rol: 'coach' }).select('nombre apellido email rol');
+    const coaches = await Usuario.find({ rol: 'coach' }).select('nombre apellido email rol bio');
     res.json(coaches);
 });
 
 // PUT /api/perfil/:id
 router.put('/perfil/:id', async (req, res) => {
     try {
-        const { nombre, apellido, email } = req.body;
+        const { nombre, apellido, email, bio } = req.body;
         const userId = req.params.id;
 
         // Verificar que el usuario exista
@@ -113,12 +114,13 @@ router.put('/perfil/:id', async (req, res) => {
         user.nombre = nombre || user.nombre;
         user.apellido = apellido || user.apellido;
         user.email = email || user.email;
+        if (bio !== undefined) user.bio = bio;
 
         await user.save();
 
         res.json({
             message: 'Perfil actualizado exitosamente',
-            Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol }
+            Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol, bio: user.bio }
         });
     } catch (error) {
         console.error(error);

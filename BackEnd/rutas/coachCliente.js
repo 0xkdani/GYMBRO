@@ -47,4 +47,25 @@ router.post('/', async (req, res) => {
     res.status(201).json({ message: 'Relacion coach-cliente creada exitosamente' });
 });
 
+// GET /api/coach-cliente/cliente/:clienteId
+router.get('/cliente/:clienteId', async (req, res) => {
+    try {
+        const relaciones = await CoachCliente.find({ clienteId: req.params.clienteId });
+        res.json(relaciones);
+    } catch (err) {
+        res.status(500).json({ message: 'Error interno', error: err });
+    }
+});
+
+// DELETE /api/coach-cliente
+router.delete('/', async (req, res) => {
+    try {
+        const { clienteId, coachId } = req.body;
+        await CoachCliente.findOneAndDelete({ clienteId, coachId });
+        res.json({ message: 'Coach desvinculado exitosamente' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error interno', error: err });
+    }
+});
+
 module.exports = router;

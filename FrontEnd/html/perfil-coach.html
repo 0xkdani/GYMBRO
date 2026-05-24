@@ -56,9 +56,10 @@
                   <span><i class="bi bi-envelope me-1"></i>admin@fittracker.com</span>
                   <span><i class="bi bi-calendar3 me-1"></i>Miembro desde septiembre de 2025</span>
                 </div>
-                <div class="d-flex flex-wrap gap-2">
-                  <span class="badge-soft">Intermedio</span>
-                  <span class="badge-soft">172 dias activo</span>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <p id="displayBio" class="coach-text-soft m-0" style="max-width: 600px;">
+                    <!-- Se mostrará aquí la presentación del coach -->
+                  </p>
                 </div>
               </div>
             </div>
@@ -90,6 +91,10 @@
               <div class="mb-4">
                 <label for="profileCorreo" class="form-label coach-text-soft">Correo electronico</label>
                 <input id="profileCorreo" type="email" class="form-control form-control-lg" value="" readonly>
+              </div>
+              <div class="mb-4">
+                <label for="profileBio" class="form-label coach-text-soft">Sobre mí</label>
+                <textarea id="profileBio" class="form-control" rows="4" placeholder="Escribe algo sobre ti y tu experiencia..." readonly></textarea>
               </div>
             </div>
           </div>

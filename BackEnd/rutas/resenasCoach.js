@@ -43,4 +43,27 @@ router.post('/', async (req, res) => {
     res.status(201).json({ message: 'Reseña registrada exitosamente' });
 });
 
+// GET /api/resenas-coach/coach/:coachId
+router.get('/coach/:coachId', async (req, res) => {
+    try {
+        const resenas = await ResenaCoach.find({ coachId: req.params.coachId })
+            .populate('clienteId', 'nombre apellido')
+            .sort({ fechaResena: -1 });
+        res.json(resenas);
+    } catch (err) {
+        res.status(500).json({ message: 'Error interno', error: err });
+    }
+});
+
+// DELETE /api/resenas-coach/:id
+router.delete('/:id', async (req, res) => {
+    try {
+        const deleted = await ResenaCoach.findByIdAndDelete(req.params.id);
+        if (!deleted) return res.status(404).json({ message: 'Reseña no encontrada' });
+        res.json({ message: 'Reseña eliminada exitosamente' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error interno al eliminar la reseña', error: err });
+    }
+});
+
 module.exports = router;

@@ -161,6 +161,8 @@
     const nombreInput = document.getElementById('profileNombre');
     const apellidoInput = document.getElementById('profileApellido');
     const correoInput = document.getElementById('profileCorreo');
+    const bioInput = document.getElementById('profileBio');
+    const displayBio = document.getElementById('displayBio');
     const btnEdit = document.getElementById('btnEditProfile');
     const btnSave = document.getElementById('btnSaveProfile');
     const feedbackEl = document.getElementById('profileFeedback');
@@ -176,6 +178,11 @@
       nombreInput.value = user.nombre || '';
       apellidoInput.value = user.apellido || '';
       correoInput.value = user.email || '';
+      
+      if (bioInput) bioInput.value = user.bio || '';
+      if (displayBio) {
+          displayBio.textContent = user.bio ? `"${user.bio}"` : 'Aún no hay información agregada sobre ti.';
+      }
 
       const fullName = `${user.nombre} ${user.apellido}`;
       const initials = (user.nombre.charAt(0) + user.apellido.charAt(0)).toUpperCase();
@@ -211,6 +218,7 @@
       nombreInput.removeAttribute('readonly');
       apellidoInput.removeAttribute('readonly');
       correoInput.removeAttribute('readonly');
+      if (bioInput) bioInput.removeAttribute('readonly');
       
       btnEdit.classList.add('d-none');
       btnSave.classList.remove('d-none');
@@ -230,10 +238,13 @@
       btnSave.textContent = 'Guardando...';
 
       try {
+        const bodyData = { nombre, apellido, email };
+        if (bioInput) bodyData.bio = bioInput.value.trim();
+
         const response = await fetch(`${API_BASE_URL}/api/perfil/${currentUser.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nombre, apellido, email })
+          body: JSON.stringify(bodyData)
         });
 
         const data = await response.json();
@@ -249,6 +260,7 @@
         nombreInput.setAttribute('readonly', 'true');
         apellidoInput.setAttribute('readonly', 'true');
         correoInput.setAttribute('readonly', 'true');
+        if (bioInput) bioInput.setAttribute('readonly', 'true');
 
         btnSave.classList.add('d-none');
         btnEdit.classList.remove('d-none');
