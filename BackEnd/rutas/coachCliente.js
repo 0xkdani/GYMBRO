@@ -61,7 +61,7 @@ router.get('/cliente/:clienteId', async (req, res) => {
 router.get('/coach/:coachId', async (req, res) => {
     try {
         const relaciones = await CoachCliente.find({ coachId: req.params.coachId })
-            .populate('clienteId', 'nombre apellido email');
+            .populate('clienteId', 'nombre apellido email fotoPerfil');
         res.json(relaciones);
     } catch (err) {
         res.status(500).json({ message: 'Error interno', error: err });

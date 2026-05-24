@@ -235,13 +235,6 @@
         }
       }
 
-      const joinDateEl = document.getElementById('profile-join-date');
-      if (joinDateEl) {
-        const options = { year: 'numeric', month: 'long' };
-        const formattedDate = joinDate.toLocaleDateString('es-ES', options);
-        joinDateEl.innerHTML = `<i class="bi bi-calendar3 me-1"></i>Miembro desde ${formattedDate}`;
-      }
-
       const activeDaysEl = document.getElementById('profile-active-days');
       if (activeDaysEl) {
         activeDaysEl.textContent = `${activeDays} ${activeDays === 1 ? 'día' : 'días'} activo`;

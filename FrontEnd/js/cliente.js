@@ -227,11 +227,16 @@
       const avgRating = coachReviewsCache[coach._id] ? coachReviewsCache[coach._id].avg : 0;
       const countReviews = coachReviewsCache[coach._id] ? coachReviewsCache[coach._id].count : 0;
 
+      let avatarHtml = `<div class="coach-user-avatar flex-shrink-0" style="width:52px;height:52px;font-size:1.3rem;">${initials}</div>`;
+      if (coach.fotoPerfil && coach.fotoPerfil.startsWith('data:image')) {
+        avatarHtml = `<img src="${coach.fotoPerfil}" alt="${coach.nombre}" class="rounded-circle flex-shrink-0" style="width:52px;height:52px;object-fit:cover; border: 2px solid var(--coach-accent);">`;
+      }
+
       return `
         <div class="col-12 col-md-6 col-xl-4">
           <article class="coach-card p-4 coach-card-clickable" style="cursor:pointer;" data-coach-id="${coach._id}">
             <div class="d-flex align-items-center gap-3 mb-3">
-              <div class="coach-user-avatar flex-shrink-0" style="width:52px;height:52px;font-size:1.3rem;">${initials}</div>
+              ${avatarHtml}
               <div class="flex-grow-1 min-w-0">
                 <p class="fw-semibold mb-0">${coach.nombre} ${coach.apellido}</p>
                 <p class="coach-text-soft small mb-0">${coach.email}</p>
@@ -517,10 +522,11 @@
         if (!response.ok) throw new Error();
         const asignaciones = await response.json();
 
-        // Buscar asignación activa del cliente actual
-        const asignacionActiva = asignaciones.find(a => 
-          a.clienteId && a.clienteId._id === currentUser.id && a.estado === 'activa'
+        // Buscar asignación activa del cliente actual (la más reciente y válida)
+        const validAsignaciones = asignaciones.filter(a => 
+          a.clienteId && a.clienteId._id === currentUser.id && a.estado === 'activa' && a.rutinaId
         );
+        const asignacionActiva = validAsignaciones[validAsignaciones.length - 1];
 
         if (asignacionActiva && asignacionActiva.rutinaId) {
           if (rutinasActivasEl) rutinasActivasEl.textContent = '1';
@@ -588,10 +594,15 @@
             const revData = await fetchReviewsForCoach(coach._id);
             const initials = (coach.nombre.charAt(0) + (coach.apellido ? coach.apellido.charAt(0) : '')).toUpperCase();
             
+            let avatarHtml = `<div class="coach-user-avatar flex-shrink-0" style="width:52px;height:52px;font-size:1.3rem;">${initials}</div>`;
+            if (coach.fotoPerfil && coach.fotoPerfil.startsWith('data:image')) {
+              avatarHtml = `<img src="${coach.fotoPerfil}" alt="${coach.nombre}" class="rounded-circle flex-shrink-0" style="width:52px;height:52px;object-fit:cover; border: 2px solid var(--coach-accent);">`;
+            }
+            
             html += `
               <div class="col-12 col-md-6 col-xl-4">
                 <article class="coach-card p-4 d-flex align-items-center gap-3">
-                  <div class="coach-user-avatar flex-shrink-0" style="width:52px;height:52px;font-size:1.3rem;">${initials}</div>
+                  ${avatarHtml}
                   <div class="flex-grow-1 min-w-0">
                     <p class="fw-semibold mb-0">${coach.nombre} ${coach.apellido}</p>
                     <p class="coach-text-soft small mb-1">${coach.email}</p>
@@ -648,19 +659,21 @@
       if (!asignacionesRes.ok) throw new Error('Error al conectar con el servidor');
       const asignaciones = await asignacionesRes.json();
 
-      // Crear un mapeo rápido de ejercicio -> grupo muscular para mostrar en la cabecera del día
+      // Crear un mapeo rápido del catálogo completo para acceder a grupos musculares y videos
       const ejerciciosCatalogo = ejerciciosRes.ok ? await ejerciciosRes.json() : [];
-      const ejercicioGrupoMap = {};
+      const ejercicioCatalogoMap = {};
       ejerciciosCatalogo.forEach(ej => {
         if (ej.nombreEjercicio) {
-          ejercicioGrupoMap[ej.nombreEjercicio.toLowerCase().trim()] = ej.grupoMuscular;
+          ejercicioCatalogoMap[ej.nombreEjercicio.toLowerCase().trim()] = ej;
         }
       });
 
       // 2. Buscar la asignación activa para este cliente en específico
-      const asignacionActiva = asignaciones.find(a => 
-        a.clienteId && a.clienteId._id === currentUser.id && a.estado === 'activa'
+      // Invertimos el arreglo o usamos filter/pop para obtener la asignación más reciente y que tenga rutinaId válido
+      const validAsignaciones = asignaciones.filter(a => 
+        a.clienteId && a.clienteId._id === currentUser.id && a.estado === 'activa' && a.rutinaId
       );
+      const asignacionActiva = validAsignaciones[validAsignaciones.length - 1];
 
       if (!asignacionActiva || !asignacionActiva.rutinaId) {
         // Renderizar estado de no tener rutina
@@ -731,7 +744,8 @@
 
         // Obtener grupos musculares únicos trabajados este día
         const gruposDia = [...new Set(ejerciciosDia.map(ej => {
-          return ejercicioGrupoMap[ej.ejercicio.toLowerCase().trim()] || '';
+          const catEj = ejercicioCatalogoMap[ej.ejercicio.toLowerCase().trim()];
+          return catEj ? catEj.grupoMuscular : '';
         }).filter(Boolean))];
 
         const gruposString = gruposDia.length > 0 ? gruposDia.join(' & ') : 'General';
@@ -755,15 +769,29 @@
 
             <ul class="list-unstyled mb-0 px-3 px-md-4 pb-3">
               ${ejerciciosDia.map(ej => {
-                // Enlace dinámico e interactivo a una búsqueda de YouTube para la correcta ejecución del ejercicio
-                const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(ej.ejercicio + ' ejecucion correcta')}`;
+                const catEj = ejercicioCatalogoMap[ej.ejercicio.toLowerCase().trim()];
+                const videoStr = catEj && catEj.videoUrl ? catEj.videoUrl : '';
+                
+                let videoBtnHtml = '';
+                if (videoStr && videoStr.startsWith('data:video')) {
+                  videoBtnHtml = `
+                    <button class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0 btn-play-video" data-ej-id="${catEj._id}">
+                      <i class="bi bi-play-circle"></i> Video
+                    </button>
+                  `;
+                } else {
+                  videoBtnHtml = `
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1 flex-shrink-0" disabled title="Sin video disponible">
+                      <i class="bi bi-camera-video-off"></i> Sin video
+                    </button>
+                  `;
+                }
+
                 return `
                   <li class="py-3 border-top border-secondary-subtle">
                     <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
                       <p class="fw-semibold mb-0 text-white">${ej.ejercicio}</p>
-                      <a href="${youtubeUrl}" target="_blank" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1 flex-shrink-0">
-                        <i class="bi bi-play-circle"></i> Video
-                      </a>
+                      ${videoBtnHtml}
                     </div>
                     <div class="d-flex flex-wrap gap-2">
                       <span class="badge text-bg-dark px-3 py-2"><strong>${ej.series}</strong> Series</span>
@@ -782,6 +810,30 @@
 
       // Actualizar el DOM de forma integrada en el contenedor dinámico
       containerElement.innerHTML = infoCardHTML + daysHTML;
+
+      // Asignar listeners a los botones de reproducción de video
+      containerElement.querySelectorAll('.btn-play-video').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ejId = btn.getAttribute('data-ej-id');
+          const catEj = ejerciciosCatalogo.find(e => e._id === ejId);
+          if (catEj && catEj.videoUrl) {
+            const modalEl = document.getElementById('modalVideoReferencia');
+            const videoEl = document.getElementById('reproductorVideo');
+            if (modalEl && videoEl) {
+              videoEl.src = catEj.videoUrl;
+              const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+              
+              modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+                videoEl.pause();
+                videoEl.src = '';
+                modalEl.removeEventListener('hidden.bs.modal', onHidden);
+              });
+              
+              modal.show();
+            }
+          }
+        });
+      });
 
     } catch (error) {
       console.error('Error al cargar la rutina del cliente:', error);

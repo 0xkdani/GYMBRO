@@ -21,11 +21,21 @@
 
     const API_BASE_URL = 'http://127.0.0.1:5000';
 
-    function buildVideoHtml(videoUrl) {
-      if (videoUrl) {
-        return `<p class="catalog-video-ok mb-0"><i class="bi bi-camera-video me-2"></i>Video disponible</p>`;
+    function buildVideoHtml(ejercicio) {
+      const videoUrl = ejercicio.videoUrl;
+      if (videoUrl && videoUrl.startsWith('data:video')) {
+        return `
+          <div class="d-flex align-items-center mt-2">
+            <p class="catalog-video-ok mb-0"><i class="bi bi-camera-video me-2"></i>Video disponible</p>
+            <button class="btn btn-sm btn-outline-success ms-auto d-flex align-items-center gap-1 btn-play-video" data-ej-video="${videoUrl}">
+              <i class="bi bi-play-circle"></i> Ver
+            </button>
+          </div>
+        `;
+      } else if (videoUrl) {
+        return `<p class="catalog-video-ok mb-0 mt-2"><i class="bi bi-camera-video me-2"></i>Video disponible</p>`;
       }
-      return `<p class="catalog-video-miss mb-0"><i class="bi bi-camera-video-off me-2"></i>Sin video disponible</p>`;
+      return `<p class="catalog-video-miss mb-0 mt-2"><i class="bi bi-camera-video-off me-2"></i>Sin video disponible</p>`;
     }
 
     function createCardFromDB(ejercicio) {
@@ -39,7 +49,7 @@
             <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar ejercicio" data-edit-exercise><i class="bi bi-pencil-square"></i></button>
           </div>
           <p class="coach-text-soft mb-2">Grupo muscular: <strong class="text-white">${ejercicio.grupoMuscular}</strong></p>
-          ${buildVideoHtml(ejercicio.videoUrl)}
+          ${buildVideoHtml(ejercicio)}
         </article>
       `;
       return col;
@@ -80,6 +90,30 @@
     // Cargar cuando se abre el modal del catálogo
     catalogoModalEl.addEventListener('show.bs.modal', () => {
       cargarCatalogo();
+    });
+
+    // Delegación de eventos para reproducir video
+    cardsContainer.addEventListener('click', (e) => {
+      const playBtn = e.target.closest('.btn-play-video');
+      if (playBtn) {
+        const videoStr = playBtn.getAttribute('data-ej-video');
+        if (videoStr) {
+          const modalEl = document.getElementById('modalVideoReferencia');
+          const videoEl = document.getElementById('reproductorVideo');
+          if (modalEl && videoEl) {
+            videoEl.src = videoStr;
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            
+            modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+              videoEl.pause();
+              videoEl.src = '';
+              modalEl.removeEventListener('hidden.bs.modal', onHidden);
+            });
+            
+            modal.show();
+          }
+        }
+      }
     });
 
     function readCardData(cardEl) {
@@ -138,37 +172,50 @@
         : null;
       const existingId = cardCol?.dataset?.id || '';
 
-      // Si el usuario sube un archivo nuevo, usamos el nombre del archivo como indicador de video
-      // (el archivo real no se sube al servidor en este proyecto; se marca 'disponible' si el campo tiene algo)
-      let videoUrl = currentHasVideoInput.value === 'si' ? 'local_video' : '';
-      if (uploadedFile) videoUrl = uploadedFile.name; // marca que tiene video
+      const originalBtnHtml = registerBtn.innerHTML;
+      registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+      registerBtn.disabled = true;
 
       try {
+        let payload = { nombreEjercicio: nombre, grupoMuscular: grupo };
+
+        if (uploadedFile) {
+          payload.videoUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(uploadedFile);
+          });
+        } else if (currentHasVideoInput.value === 'no') {
+          payload.videoUrl = '';
+        }
+
         if (existingId) {
-          // Actualizar ejercicio existente en la base de datos
           const res = await fetch(`${API_BASE_URL}/api/ejercicios/${existingId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombreEjercicio: nombre, grupoMuscular: grupo, videoUrl })
+            body: JSON.stringify(payload)
           });
           if (!res.ok) throw new Error('Error al actualizar ejercicio');
         } else {
-          // Crear nuevo en la base de datos
           const res = await fetch(`${API_BASE_URL}/api/ejercicios`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombreEjercicio: nombre, grupoMuscular: grupo, videoUrl })
+            body: JSON.stringify(payload)
           });
           if (!res.ok) throw new Error('Error al guardar ejercicio');
         }
 
         formModal.hide();
-        // Recargar el catálogo desde la API para reflejar los cambios reales
         catalogoModalEl.addEventListener('shown.bs.modal', cargarCatalogo, { once: true });
         catalogoModal.show();
 
       } catch (err) {
         console.error(err);
+        alert('Hubo un error al guardar el ejercicio. Asegúrate de que el video no sea demasiado pesado o reinicia los servidores.');
+      } finally {
+        registerBtn.innerHTML = originalBtnHtml;
+        registerBtn.disabled = false;
       }
     });
 
@@ -222,10 +269,15 @@
                   const cli = asig.clienteId;
                   if (!cli) return '';
                   const initials = (cli.nombre.charAt(0) + (cli.apellido ? cli.apellido.charAt(0) : '')).toUpperCase();
+                  let avatarHtml = `<div class="assigned-avatar">${initials}</div>`;
+                  if (cli.fotoPerfil && cli.fotoPerfil.startsWith('data:image')) {
+                    avatarHtml = `<img src="${cli.fotoPerfil}" alt="${cli.nombre}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid var(--coach-border-soft);">`;
+                  }
+
                   return `
                     <div class="assigned-user d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-3">
                       <div class="d-flex align-items-center gap-3">
-                        <div class="assigned-avatar">${initials}</div>
+                        ${avatarHtml}
                         <span class="h4 mb-0 text-white">${cli.nombre} ${cli.apellido || ''}</span>
                       </div>
                       <button class="btn btn-dark-soft px-3 btn-ver-progreso" data-cliente-id="${cli._id}">
@@ -499,12 +551,20 @@
           const cli = rel.clienteId;
           if (!cli) return '';
           const isChecked = asignadosAEstaRutina.has(cli._id) ? 'checked' : '';
+          const initials = (cli.nombre.charAt(0) + (cli.apellido ? cli.apellido.charAt(0) : '')).toUpperCase();
+          let avatarHtml = `
+            <div class="avatar-mini rounded-circle d-flex align-items-center justify-content-center text-success fw-bold" style="width: 40px; height: 40px; background: rgba(33, 217, 123, 0.1);">
+              ${initials}
+            </div>
+          `;
+          if (cli.fotoPerfil && cli.fotoPerfil.startsWith('data:image')) {
+            avatarHtml = `<img src="${cli.fotoPerfil}" alt="${cli.nombre}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">`;
+          }
+
           return `
             <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.2s;">
               <div class="d-flex align-items-center gap-3">
-                <div class="avatar-mini rounded-circle d-flex align-items-center justify-content-center text-success fw-bold" style="width: 40px; height: 40px; background: rgba(33, 217, 123, 0.1);">
-                  ${(cli.nombre.charAt(0) + (cli.apellido ? cli.apellido.charAt(0) : '')).toUpperCase()}
-                </div>
+                ${avatarHtml}
                 <div>
                   <div class="fw-semibold text-white" style="font-size: 0.95rem;">${cli.nombre} ${cli.apellido || ''}</div>
                   <small class="coach-text-soft" style="font-size: 0.8rem;">${cli.email}</small>

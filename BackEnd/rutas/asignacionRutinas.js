@@ -50,8 +50,8 @@ router.post('/', async (req, res) => {
 // GET /api/asignacion-rutinas
 router.get('/', async (req, res) => {
     const asignaciones = await AsignacionRutina.find()
-        .populate('clienteId', 'nombre apellido')
-        .populate('coachId', 'nombre apellido')
+        .populate('clienteId', 'nombre apellido fotoPerfil')
+        .populate('coachId', 'nombre apellido fotoPerfil')
         .populate('rutinaId', 'nombreRutina objetivo');
     res.json(asignaciones);
 });
