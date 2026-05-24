@@ -89,4 +89,74 @@ router.get('/coaches', async (req, res) => {
     res.json(coaches);
 });
 
+// PUT /api/perfil/:id
+router.put('/perfil/:id', async (req, res) => {
+    try {
+        const { nombre, apellido, email } = req.body;
+        const userId = req.params.id;
+
+        // Verificar que el usuario exista
+        const user = await Usuario.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // Si intenta cambiar a un email que ya existe en otro usuario
+        if (email && email !== user.email) {
+            const existingEmail = await Usuario.findOne({ email });
+            if (existingEmail) {
+                return res.status(400).json({ message: 'El correo ya está en uso' });
+            }
+        }
+
+        // Actualizar datos
+        user.nombre = nombre || user.nombre;
+        user.apellido = apellido || user.apellido;
+        user.email = email || user.email;
+
+        await user.save();
+
+        res.json({
+            message: 'Perfil actualizado exitosamente',
+            Usuario: { id: user._id, nombre: user.nombre, apellido: user.apellido, email: user.email, rol: user.rol }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al actualizar el perfil' });
+    }
+});
+
+// PUT /api/perfil/:id/password
+router.put('/perfil/:id/password', async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.params.id;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+        }
+
+        // Se usa select('+password') para traer el campo oculto
+        const user = await Usuario.findById(userId).select('+password');
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // Verificar la contraseña actual
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'La contraseña actual es incorrecta' });
+        }
+
+        // Asignar nueva contraseña y guardar (el pre-save en el modelo la hasheará)
+        user.password = newPassword;
+        await user.save();
+
+        res.json({ message: 'Contraseña actualizada exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al cambiar la contraseña' });
+    }
+});
+
 module.exports = router;

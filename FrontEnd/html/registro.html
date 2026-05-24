@@ -59,7 +59,8 @@
             <i class="bi bi-person-plus fs-3" style="color:var(--accent);"></i>
           </div>
 
-          <form>
+          <div id="registerFeedback" class="mb-3 text-center" style="display:none; font-weight: 500;"></div>
+          <form id="registerForm">
             <div class="row g-3">
               <div class="col-12 col-md-6">
                 <label for="nombre" class="form-label text-white">Nombre</label>
@@ -98,7 +99,7 @@
                 </div>
               </div>
               <div class="col-12 d-grid mt-2">
-                <button type="submit" class="btn btn-accent py-2">Crear cuenta</button>
+                <button type="submit" id="registerSubmitBtn" class="btn btn-accent py-2">Crear cuenta</button>
               </div>
             </div>
           </form>
@@ -113,5 +114,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/script.js"></script>
 </body>
 </html>
