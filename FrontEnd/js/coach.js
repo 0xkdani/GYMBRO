@@ -46,7 +46,10 @@
         <article class="catalog-card p-4 h-100">
           <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
             <h3 class="h4 mb-0">${ejercicio.nombreEjercicio}</h3>
-            <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar ejercicio" data-edit-exercise><i class="bi bi-pencil-square"></i></button>
+            <div class="d-flex gap-2">
+              <button class="btn coach-icon-btn coach-icon-btn-muted" title="Editar ejercicio" data-edit-exercise><i class="bi bi-pencil-square"></i></button>
+              <button class="btn coach-icon-btn coach-icon-btn-danger" title="Eliminar ejercicio" data-delete-exercise><i class="bi bi-trash"></i></button>
+            </div>
           </div>
           <p class="coach-text-soft mb-2">Grupo muscular: <strong class="text-white">${ejercicio.grupoMuscular}</strong></p>
           ${buildVideoHtml(ejercicio)}
@@ -142,7 +145,34 @@
       openFormModal();
     });
 
-    cardsContainer.addEventListener('click', (event) => {
+    cardsContainer.addEventListener('click', async (event) => {
+      const deleteBtn = event.target.closest('[data-delete-exercise]');
+      if (deleteBtn) {
+        const cardCol = deleteBtn.closest('.catalog-item');
+        const id = cardCol.dataset.id;
+        const modalEl = document.getElementById('modalConfirmarEliminarEjercicio');
+        if (modalEl) {
+          const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+          modal.show();
+          
+          const confirmBtn = document.getElementById('btn-confirmar-eliminar-ejercicio');
+          const newConfirmBtn = confirmBtn.cloneNode(true);
+          confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+          
+          newConfirmBtn.addEventListener('click', async () => {
+            try {
+              const res = await fetch(`${API_BASE_URL}/api/ejercicios/${id}`, { method: 'DELETE' });
+              if (!res.ok) throw new Error('Error al eliminar');
+              cargarCatalogo();
+            } catch (e) {
+              alert('No se pudo eliminar el ejercicio');
+            }
+            modal.hide();
+          });
+        }
+        return;
+      }
+
       const editBtn = event.target.closest('[data-edit-exercise]');
       if (!editBtn) return;
 

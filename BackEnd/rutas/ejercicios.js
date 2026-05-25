@@ -51,4 +51,17 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// DELETE /api/ejercicios/:id
+router.delete('/:id', async (req, res) => {
+    try {
+        const ejercicio = await Ejercicio.findByIdAndDelete(req.params.id);
+        if (!ejercicio) {
+            return res.status(404).json({ message: 'Ejercicio no encontrado' });
+        }
+        res.json({ message: 'Ejercicio eliminado exitosamente' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error al eliminar el ejercicio', error: err });
+    }
+});
+
 module.exports = router;
