@@ -108,6 +108,11 @@
         return;
       }
 
+      if (password.length < 4) {
+        setFeedback('La contraseña debe tener 4 caracteres o más.', 'error');
+        return;
+      }
+
       if (password !== confirmPassword) {
         setFeedback('Las contraseñas no coinciden.', 'error');
         return;

@@ -298,7 +298,11 @@
       const isActive = myCoachesIds.has(c._id);
       const revData = await fetchReviewsForCoach(c._id);
 
-      document.getElementById('modal-avatar').textContent = initials;
+      if (c.fotoPerfil && c.fotoPerfil.startsWith('data:image')) {
+        document.getElementById('modal-avatar').innerHTML = `<img src="${c.fotoPerfil}" alt="${c.nombre}" class="rounded-circle" style="width:100%; height:100%; object-fit:cover; border: 2px solid var(--coach-accent);">`;
+      } else {
+        document.getElementById('modal-avatar').textContent = initials;
+      }
       document.getElementById('modal-nombre').textContent = `${c.nombre} ${c.apellido}`;
       document.getElementById('modal-especialidad').textContent = c.email;
       document.getElementById('modal-estrellas').innerHTML = starsHTML(revData.avg);
@@ -363,7 +367,7 @@
         });
       }
 
-      document.getElementById('modal-servicios').innerHTML = '<p class="text-muted p-3">Los servicios se gestionarán próximamente.</p>';
+
 
       document.getElementById('modal-resenas').innerHTML = revData.resenas.length > 0 ? revData.resenas.map(r => {
         const u = r.clienteId || {};

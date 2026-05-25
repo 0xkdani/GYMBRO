@@ -43,20 +43,28 @@ const Usuario = mongoose.model('Usuario', userSchema);
 
 // POST /api/register
 router.post('/register', async (req, res) => {
-    const { nombre, apellido, email, password, rol } = req.body;
-    if (!nombre || !apellido || !email || !password) {
-        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    try {
+        const { nombre, apellido, email, password, rol } = req.body;
+        if (!nombre || !apellido || !email || !password) {
+            return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+        }
+
+        if (password.length < 4) {
+            return res.status(400).json({ message: 'La contraseña debe tener 4 caracteres o más' });
+        }
+
+        const existingUser = await Usuario.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'El correo ya está registrado' });
+        }
+
+        const newuser = new Usuario({ nombre, apellido, email, password, rol: rol || 'cliente' });
+        await newuser.save();
+
+        res.status(201).json({ message: 'Usuario registrado exitosamente' });
+    } catch (err) {
+        res.status(400).json({ message: err.message || 'Error al registrar usuario' });
     }
-
-    const existingUser = await Usuario.findOne({ email });
-    if (existingUser) {
-        return res.status(400).json({ message: 'El correo ya está registrado' });
-    }
-
-    const newuser = new Usuario({ nombre, apellido, email, password, rol: rol || 'cliente' });
-    await newuser.save();
-
-    res.status(201).json({ message: 'Usuario registrado exitosamente' });
 });
 
 // POST /api/login
