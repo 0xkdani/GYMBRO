@@ -36,9 +36,13 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ message: 'El coach no existe o no tiene rol coach' });
     }
 
-    const existingRelation = await CoachCliente.findOne({ clienteId, coachId });
+    const existingRelation = await CoachCliente.findOne({ clienteId });
     if (existingRelation) {
-        return res.status(400).json({ message: 'La relacion coach-cliente ya existe' });
+        const isSameCoach = existingRelation.coachId.toString() === coachId.toString();
+        const message = isSameCoach
+            ? 'Ya seleccionaste a este coach'
+            : 'Ya tienes un coach seleccionado. Desvinculalo antes de elegir otro.';
+        return res.status(409).json({ message });
     }
 
     const nuevaRelacion = new CoachCliente({ clienteId, coachId, fechaAsignacion, estado: estado || 'activo' });

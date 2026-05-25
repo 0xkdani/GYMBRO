@@ -296,6 +296,7 @@
 
       const initials = (c.nombre.charAt(0) + (c.apellido ? c.apellido.charAt(0) : '')).toUpperCase();
       const isActive = myCoachesIds.has(c._id);
+      const alreadyHasCoach = myCoachesIds.size > 0;
       const revData = await fetchReviewsForCoach(c._id);
 
       if (c.fotoPerfil && c.fotoPerfil.startsWith('data:image')) {
@@ -321,7 +322,10 @@
              <button class="btn btn-dark-soft btn-sm" id="btn-show-review"><i class="bi bi-star me-1"></i>Calificar</button>
              <button class="btn coach-icon-btn coach-icon-btn-danger" id="btn-unlink-coach" title="Desvincular"><i class="bi bi-person-dash"></i></button>
            </div>`
-        : `<button class="btn coach-btn-accent btn-sm mt-2" id="btn-link-coach"><i class="bi bi-person-plus me-1"></i>Seleccionar Coach</button>`;
+        : alreadyHasCoach
+          ? `<p class="coach-text-soft small mb-2">Ya tienes un coach seleccionado. Desvinculalo para elegir otro.</p>
+             <button class="btn coach-btn-accent btn-sm" disabled><i class="bi bi-person-plus me-1"></i>Seleccionar Coach</button>`
+          : `<button class="btn coach-btn-accent btn-sm mt-2" id="btn-link-coach"><i class="bi bi-person-plus me-1"></i>Seleccionar Coach</button>`;
 
       if (isActive) {
         document.getElementById('btn-show-review').addEventListener('click', () => {
@@ -351,18 +355,24 @@
             }
           });
         });
-      } else {
-        document.getElementById('btn-link-coach').addEventListener('click', async () => {
+      } else if (!alreadyHasCoach) {
+        const linkCoachButton = document.getElementById('btn-link-coach');
+        linkCoachButton.addEventListener('click', async () => {
+          linkCoachButton.disabled = true;
           try {
-            await fetch(`${API_BASE_URL}/api/coach-cliente`, {
+            const response = await fetch(`${API_BASE_URL}/api/coach-cliente`, {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ clienteId: currentUser.id, coachId: c._id })
             });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'No fue posible seleccionar este coach');
+
             bootstrap.Modal.getOrCreateInstance(document.getElementById('modalPerfilCoach')).hide();
             showFeedback('coachMainFeedback', 'Coach seleccionado exitosamente.', 'success');
-            loadCoachesData();
+            await loadCoachesData();
           } catch(e) { 
             showFeedback('coachModalFeedback', 'Error al vincular: ' + e.message, 'error'); 
+            linkCoachButton.disabled = false;
           }
         });
       }
